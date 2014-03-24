@@ -1,0 +1,10 @@
+BoardGame module contain BoardGame.java Board.java WinRoutes.java Route.java
+
+BoardGame module consists of Board and WinRoutes, provides information to PlayProgram module like board information, legal move, tie test(from Board module) and winTest (from WinRoutes module). provides information to AI module like utility of player in attack or defence situation(from WinRoutes module). 
+
+BoardGame module contain current player information and switch it automatically after make a move, so other module need not to care about the turn.
+
+BoardGame module maybe can be improve like this:
+There is a basic class Board can provide all interface that PlayProgram need, BoardGame just extends Board when two human playing the game with no need for AI.
+
+There is a class AIBoard(like current WinRoutes) extends Board, has basic function of Board and also overriding more efficient wintest method and the function for AI module. When PlayProgram need AI, it can use advanced AIBoardGame

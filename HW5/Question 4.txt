@@ -1,0 +1,36 @@
+4.
+The data files are in the submitted folder and also in the URL:
+http://my.fit.edu/~sunx2013/ArtificialIntelligence/HW5/DecisionTreeLearning/src/resource/ttt-move-attr.txt
+...
+
+a.
+To handle more than 2 classes, the I(P(pos), P(neg)) becomes I(P(class1), ...P(classN))
+
+In this case, I changed the classes to:
+
+x-wins win lose tie
+
+c.
+Additional attribute is "blank number", that's the number of the remain blanks in the board. The attribute is following:
+
+blank-number 0 1 2 3 4 5 6 7 8 9
+
+f.
+With the additional attribute, the accuracy is highly improved. For the 200 train 50 test cases, The accuracy of non-additional one is always below 0.9, and the one with additional attribute is always beyond 0.9.
+
+One random test result is(200 train 50 test):
+initial attibutes:
+1.0
+0.86
+initial attibutes plus additional:
+1.0
+0.94
+
+In less train set case(50 train 50 test), the improvement is more obvious. Here's one test result:
+
+initial attibutes:
+1.0
+0.66
+initial attibutes plus additional:
+1.0
+0.84

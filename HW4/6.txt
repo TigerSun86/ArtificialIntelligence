@@ -1,0 +1,6 @@
+States: current expression
+Actions: resolve current expression with one anther expression
+Goal state: empty expression
+Path cost: 1 per resolution
+
+heuristic function: the number of literals in current expression. It is admissible because one step of resolution can eliminate at most one literal, and goal state has zero literal, so if we want to arrive goal state from the current expression, we need at least number of literals steps to eliminate all literals.

@@ -1,0 +1,48 @@
+function alpha-beta-decision(state)
+    queue = generateChildStates(state, descending)
+    
+    valueMax = -inf
+    while queue is not empty
+        get one child 
+        valueMax = max(valueMax, Min-value(child, valueMax, +inf, depthLimit))
+        actionMax = actionOfValueMax
+        
+    Return actionMax 
+    
+function Max-value (state, alphaOfParent, betaOfParent, depth)
+    if terminal-test(state, depth) then return utility(state)
+    queue = generateChildStates(state, descending)
+    
+    alphaOfMine = alphaOfParent
+    while queue is not empty
+        get one child 
+        alphaOfMine = max(alphaOfMine, Min-value(child, alphaOfMine, betaOfParent, depth - 1))
+        if alphaOfMine >= betaOfParent break // prune all siblings after this
+        
+    return alphaOfMine
+    
+function Min-value (state, alphaOfParent, betaOfParent, depth)
+    if terminal-test(state, depth) then return utility(state)
+    queue = generateChildStates(state, ascending)
+    
+    betaOfMine = betaOfParent
+    while queue is not empty
+        get one child 
+        betaOfMine = min(betaOfMine, Max-value(child, alphaOfParent, betaOfMine, depth - 1))
+        if betaOfMine <= alphaOfParent break // prune all siblings after this
+        
+    return betaOfMine
+    
+function terminal-test(state, depth) 
+    if hasWinner return true
+    if depth == 0 return true
+    else return false
+    
+function generateChildStates(state, order)
+    get all actions
+    get all child states from result(state, action)
+    get utility of children utility(state)
+    sort children by utility order // order is descending or ascending(descending: me, scan strongest move first; ascending: opponent, scan most harmful move first
+    store children in queue // every node uses its own queue
+    
+    return queue

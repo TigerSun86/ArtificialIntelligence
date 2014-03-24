@@ -1,0 +1,23 @@
+3.a.
+KB == (a||b)&&(!b||c)
+alpha == a||c
+!alpha == !a&&!c
+KB&&!alpha
+clauses set == {(a||b), (!b||c), !a, !c}
+resolve (a||b) with (!b||c) we obtain (a||c)
+so new resolvents == {(a||b), (!b||c), !a, !c, (a||c)}
+if we resolve !a with (a||c) we obtain c
+so new resolvents == {(a||b), (!b||c), !a, !c, (a||c), c}
+if we resolve !c with c we obtain empty
+So KB&&!alpha is unsatisfiable, so KB|=alpha
+
+b.
+KB == (a||b||c)&&(!b||!c||d)
+alpha == a||d
+!alpha == !a&&!d
+clauses set == {(a||b||c), (!b||!c||d), !a, !d}
+If we resolve first 2 clauses, we will get a new clause like (a||c||!c||d), it's tautology, so discard it.
+Resolve first 2 clauses with last 2 clauses, we got new clauses == {(b||c), (!b||!c)}
+We cannot resolve this 2 clauses or with any other clauses, because they will all lead to a clause which is tautology.
+So at the end, all resolved clauses == {(a||b||c), (!b||!c||d), !a, !d, (b||c), (!b||!c)}
+So all possible sub clauses are not empty, so we cannot prove KB|=alpha

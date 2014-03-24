@@ -1,0 +1,22 @@
+sample commad line:
+java TestMC 3 3 left astar
+java TestMC 1 1 right ucs
+
+a.
+State: [number of missionaries(0 to 3), number of cannibals(0 to 3), current bank(left, right)]
+action: 1. boat 1 m to the other side
+        2. boat 2 m
+        3. boat 1 c
+        4. boat 2 c
+        5. boat 1 m 1 c
+goal state: [3 3 right]
+path cost: boat 1 m costs 1, boat 1 c costs 2
+
+b.
+heuristic function:
+1. do not consider about m should no less than c.
+2. always think about current state is left bank. if current is right, then make a person paddle the boat to the left (the person should be m if possible), and add this cost to the costH.
+3. now we are in left bank. the aim is to make all person here get right bank. So I choose a boatman first(should be m if possible), and assume this boatman will boat all remaining people here to the right. So the times of boatman going to right equal to remaining people number, and the times he came back are one less than the former times. And every remaining people taken by boatman will go to the right once for each.
+
+So the total cost will be:
+heuristic = cost of right to left(if necessary) + (times of boatman going right + times of boatman coming back) * cost of boatman + all remaining people once * their own cost

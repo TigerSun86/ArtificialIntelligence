@@ -1,0 +1,18 @@
+1. Assume there is a bunch of bananas on the ceiling of the room, the position is (bX, bY, bZ), and bZ = 8-foot.
+
+A state should include three positions, the position of monkey (mX, mY, mZ), the position of crate1 (c1X, c1Y, c1Z), the position of crate2 (c2X, c2Y, c2Z). 0 <= X <= Length of room, 0 <= Y <= Width of room, 0 <= Z <= 9-foot.
+
+To simplify the model, I regard the room as a length 2, width 2, height 3 grid room. So position coordinates range is 0 <= X <= 1, 0 <= Y <= 1, 0 <= Z <= 2.
+
+Initial state: (mX, mY), (c1X, c1Y), (c2X, c2Y) are random, mZ, c1Z, c2Z = 0.
+
+Action: 1, monkey moves, changes the (mX, mY).
+      2, monkey moves crate, changes the (mX, mY), and (c1X, c1Y) or (c2X, c2Y). This can only happen when (mX, mY) = (c1X, c1Y) or (mX, mY) = (c2X, c2Y), and all Z = 0. 
+      3, monkey stacks crate, makes the c1Z = 1 or c2Z = 1. This can only happen when (mX, mY) = (c1X, c1Y) = (c2X, c2Y).
+      4, monkey climbs, makes the mZ++. This can only happen when (mX, mY, mZ) = (c1X, c1Y, c1Z) or (mX, mY, mZ) = (c2X, c2Y, c2Z)
+
+Goal state: the position of monkey (mX, mY, mZ) equals to the position of bananas (bX, bY, bZ).
+
+Path cost: monkey moves crate and monkey stacks crate cost 2 for moving every single grid, others cost 1 for moving every single grid.
+
+The number of possible states: 12 ^ 3. In this grid world, the number of possible position is 2 * 2 * 3 = 12. In the state node, we have 3 objects, monkey, crate1, crate2. So the number of possible states = 12 ^ 3

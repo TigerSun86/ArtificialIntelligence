@@ -1,0 +1,19 @@
+solution costs 27. number of step is: 11. the path is:
+[3,3,left] [1,1,right] [3,2,left] [0,3,right] [3,1,left] [2,2,right] [2,2,left] [3,1,right] [0,3,left] [3,2,right] [1,1,left] [3,3,right] 
+explored nodes: 15
+[3,3, left] costG:  0 costF:  0 parent: [-1,-1]
+[0,1,right] costG:  2 costF:  2 parent: [3,3]
+[1,1,right] costG:  3 costF:  3 parent: [3,3]
+[0,2,right] costG:  4 costF:  4 parent: [3,3]
+[3,2, left] costG:  4 costF:  4 parent: [1,1]
+[0,3,right] costG:  8 costF:  8 parent: [3,2]
+[3,1, left] costG: 10 costF: 10 parent: [0,3]
+[2,2,right] costG: 12 costF: 12 parent: [3,1]
+[2,2, left] costG: 15 costF: 15 parent: [2,2]
+[3,1,right] costG: 17 costF: 17 parent: [2,2]
+[0,3, left] costG: 19 costF: 19 parent: [3,1]
+[3,2,right] costG: 23 costF: 23 parent: [0,3]
+[1,1, left] costG: 24 costF: 24 parent: [3,2]
+[0,2, left] costG: 25 costF: 25 parent: [3,2]
+[3,3,right] costG: 27 costF: 27 parent: [1,1]
+unexplored but generated nodes: 0

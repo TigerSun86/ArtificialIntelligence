@@ -1,0 +1,26 @@
+Utility is calculated like this:
+Your utility - opponent's utility
+
+I sum utilities of all possible win routes as the one player's utility.
+
+The utility of one route can be calculate by the number of pieces of this player. But if there is one piece of the other player in the route, the route will never win, so its utility is 0. 
+
+One player's utility is differentiated by "it's your turn to move or not", which is considered as attack and defence in program.
+
+The attack player has a superiority to defence, so I use a superiority factor to implement it. 
+
+A4(attack and 4 pieces with no other piece) and D4 are a win state, they should be kind of infinite value, so the AI could extremely pursue it or avoid it. But would it be better that they are equal or A4 bigger than D4?
+
+A3(attack and 3 pieces with no other piece) is about to win, almost can equal to win, it should have large value.
+
+But double D3 is also almost equal to win, except your opponent is having a A3. So even though double D3 almost equal to win, we still need to confess the attack player has a large superior, which should be expressed by a large factor to make sure that even 3, 4 or more D3 can not compare with 1 A3.
+
+Single D3, can make opponent have to move to this spot, so it's quite useful too, which should be highly evaluate. But my program seems like some times won't fill opponent's D3, it's so weird.
+
+So single D3 should be more useful than A2, so I call it offensive superiority, I use a factor called offensive factor. But turn difference and number difference, which should be more important?
+
+To make it easy, I just use superiority factor and offensive factor to make the difference with D1, A1, D2 and so on (The D0 and A0 are 0). 
+
+I didn't give double D3 or other structure a more higher score, it's a little hard to express.
+
+The score table of the structure(D1, A1...) are statically generated, so the score can be time effecientlly get.

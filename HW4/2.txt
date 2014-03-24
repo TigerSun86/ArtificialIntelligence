@@ -1,0 +1,7 @@
+2.
+If KB&&!a is satisfiable, it means it is true in some models, it means !a will be true in some models, and also, will be false in some other models.
+
+For example, if the KB = (B1,1 <=> (P1,2 || P2,1)) && !B1,1, but a = !P2,2
+In this case KB&&!a is satisfiable because we have no knowledge about the P2,2, so a might be true in model with B1,2, and would be false in model with !B1,2. So in this case, we cannot prove a is false or true.
+
+When KB&&a is unsatisfiable, a will be false.

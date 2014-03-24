@@ -1,0 +1,9 @@
+**** test-case euclidean ****
+5.196152
+9.486833
+1
+0
+0
+5.196152
+0
+**** test-case euclidean ****

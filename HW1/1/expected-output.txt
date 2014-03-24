@@ -1,0 +1,26 @@
+**** test-case positive-count ****
+1
+0
+0
+1
+0
+2
+0
+1
+1
+7
+0
+4
+4
+3
+NIL
+NIL
+NIL
+NIL
+NIL
+NIL
+NIL
+1000
+100
+**** test-case positive-count ****
+

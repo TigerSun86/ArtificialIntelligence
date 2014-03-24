@@ -1,0 +1,30 @@
+4.
+unicorn is mythical => unicorn is immortal
+unicorn is not mythical => unicorn is mortal mammal
+unicorn is mythical || unicorn is mammal => unicorn is horned
+unicorn is horned => unicorn is magical
+
+knowledge:
+Mythical(x) => Immortal(x)
+!Mythical(x) => Mammal(x)
+Mythical || Mammal(x) => Horned(x)
+Horned(x) => Magical(x)
+
+clauses set:
+(!Mythical(x) || Immortal(x)) &&
+(Mythical(x) || Mammal(x)) &&
+(!Mythical || Horned(x)) && (!Mammal(x) || Horned(x)) &&
+(!Horned(x) || Magical(x))
+==
+{(!Mythical(x) || Immortal(x)), (Mythical(x) || Mammal(x)), (!Mythical || Horned(x)), (!Mammal(x) || Horned(x)), (!Horned(x) || Magical(x))}
+
+!alpha1 == !Mythical(x)
+!alpha2 == !Magical(x)
+!alpha3 == !Horned(x)
+
+The new resolvents set == {(Mammal(x) || Immortal(x)), (Mammal(x) || Horned(x)), (Mythical(x) || Horned(x)), (!Mythical(x) || Magical(x)), (!Mammal(x) || Magical(x)), (Immortal(x) || Magical(x)), (Mythical(x) || Horned(x)), Horned(x), Magical(x)}
+
+add !Mythical(x) into clauses set, cannot get any empty
+resolve !Magical(x) with Magical(x), it is a empty
+resolve !Horned(x) with Horned(x), it is a empty
+So Mythical(x) cannot be proved, but Magical(x) and Horned(x) are true.

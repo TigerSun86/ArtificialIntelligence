@@ -1,0 +1,88 @@
+
+
+
+(defun storm-distribution (list)
+    (let ((temp)   
+          (Hurricane-Cat-5 0)
+          (Hurricane-Cat-4 0)
+          (Hurricane-Cat-3 0)
+          (Hurricane-Cat-2 0)
+          (Hurricane-Cat-1 0)
+          (Tropical-Storm 0)
+          (maxloop (length list))
+         )
+
+        (do ((i 1 (1+ i))
+             (tempList list (cdr tempList))
+            )
+            ((> i maxloop))
+            
+            ;get one speed
+            (setq temp (cadr (car tempList)))
+            ;judge distribution
+            (cond ((> temp 156) (setq Hurricane-Cat-5 (1+ Hurricane-Cat-5)))
+                ((> temp 131) (setq Hurricane-Cat-4 (1+ Hurricane-Cat-4)))
+                ((> temp 111) (setq Hurricane-Cat-3 (1+ Hurricane-Cat-3)))
+                ((> temp 96) (setq Hurricane-Cat-2 (1+ Hurricane-Cat-2)))
+                ((> temp 74) (setq Hurricane-Cat-1 (1+ Hurricane-Cat-1)))
+                ((> temp 39) (setq Tropical-Storm (1+ Tropical-Storm)))
+                (t nil)
+            )  
+        )
+
+        ;get the results together
+        (list (list 'Tropical-Storm Tropical-Storm)
+              (list 'Hurricane-Cat-1 Hurricane-Cat-1)
+              (list 'Hurricane-Cat-2 Hurricane-Cat-2)
+              (list 'Hurricane-Cat-3 Hurricane-Cat-3)
+              (list 'Hurricane-Cat-4 Hurricane-Cat-4)
+              (list 'Hurricane-Cat-5 Hurricane-Cat-5)
+        )
+    )
+)
+
+(defun judge-distribution (speed)
+    (cond ((> speed 156) (setq Hurricane-Cat-5 (1+ Hurricane-Cat-5)))
+        ((> speed 131) (setq Hurricane-Cat-4 (1+ Hurricane-Cat-4)))
+        ((> speed 111) (setq Hurricane-Cat-3 (1+ Hurricane-Cat-3)))
+        ((> speed 96) (setq Hurricane-Cat-2 (1+ Hurricane-Cat-2)))
+        ((> speed 74) (setq Hurricane-Cat-1 (1+ Hurricane-Cat-1)))
+        ((> speed 39) (setq Tropical-Storm (1+ Tropical-Storm)))
+        (t nil)
+    )  
+)
+
+(defun get-category-name (speed)
+    (cond ((> speed 156) 'Hurricane-Cat-5)
+          ((> speed 131) 'Hurricane-Cat-4)
+          ((> speed 111) 'Hurricane-Cat-3)
+          ((> speed 96) 'Hurricane-Cat-2)
+          ((> speed 74) 'Hurricane-Cat-1)
+          ((> speed 39) 'Tropical-Storm)
+          (t nil)
+    )
+)
+
+;translate (bonnie 65) to (BONNIE TROPICAL-STORM)
+(defun get-one-spot (list)
+    (list (car list) (get-category-name (cadr list)))
+)
+
+(defun storm-categories (list)
+    (mapcar #'get-one-spot list)
+)
+(defun get-speed (list)
+    (judge-distribution (cadr list)
+)
+(defconstant *storm-level* '(Tropical-Storm Hurricane-Cat-1 Hurricane-Cat-2 Hurricane-Cat-3 Hurricane-Cat-4 Hurricane-Cat-5))
+
+(defun storm-distribution (list)
+    (mapcar #'get-speed list)
+    (setq storm-value (mapcar #'eval *storm-level*))
+    (mapcar #'list *storm-level* storm-value)
+)
+
+(defconstant *storms2004* '((bonnie 65) (charley 150) (frances 145) (ivan 165) (jeanne 120) ))
+(storm-categories *storms2004*)
+(storm-distribution *storms2004*)
+

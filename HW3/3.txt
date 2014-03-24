@@ -1,0 +1,5 @@
+b. Given the values of the first six leaves, we still need to evaluate remain leaves, because last min tree may has a huge value, so after calculating, the sum value of right tree may larger than left tree
+
+if we have seventh leaves, we need not to evaluate the eighth leaf, because these two leaves are under the same min node. because of the value of seventh is -1, so the value of the right tree is <= -0.5, but because we already have the value of left tree, this make the alpha of root is 1.5, so the biggest possible value of right tree < alpha of root, the root won't choose right path, so it's not necessary to check the eighth leaf.
+
+c. 0 to 2

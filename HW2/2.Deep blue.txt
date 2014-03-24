@@ -1,0 +1,16 @@
+a. The number of positions deep blue can evaluate in 3 minutes is:
+200 * 10^6 * 60 * 3 = 3.6 * 10^10
+The number of leaf nodes in level 1 is:
+8 * 2 + 14 * 2 + 8 * 2 + 14 * 2 + 1 * 28 + 1 * 8 = 124
+The number in level 2 is 124^2
+The number in level h is 124^h
+The number of nodes in tree is n = (124^(h + 1) - 124)/123
+And n = 3.6 * 10^10
+So h = log124(123 * 3.6 * 10^10 + 124) ¨C 1
+h = 5.04
+So deep blue can evaluate 5 levels in 3 minutes.
+
+b. The number of nodes in 20 levels = (124^(20 + 1) - 124)/123
+So in 3 minutes deep blue should visit positions (124^(20 + 1) - 124)/(123 * 3 * 60)
+= 4.14 * 10^39 positions per second.
+

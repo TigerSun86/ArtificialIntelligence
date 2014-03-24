@@ -1,0 +1,2 @@
+[Alternate Yes[Bar Yes[FriSat Yes[Hungry Yes[Rain Yes[Yes] No[Reservation Yes[No] No[Yes]]] No[Yes]] No[Yes]] No[FriSat Yes[Hungry Yes[Yes] No[No]] No[Hungry Yes[Rain Yes[Yes] No[Reservation Yes[Yes] No[No]]] No[Yes]]]] No[Bar Yes[FriSat Yes[No] No[Hungry Yes[Yes] No[Rain Yes[No] No[Yes]]]] No[FriSat Yes[Yes] No[Hungry Yes[Yes] No[No]]]]]
+1.0

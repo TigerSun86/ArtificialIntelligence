@@ -1,0 +1,15 @@
+;(load "C:\\WorkSpace\\Artificial Intelligence\\HW1\\2\\test-case.lisp")
+(load "C:\\WorkSpace\\Artificial Intelligence\\HW1\\2\\storm-categories.lisp")
+
+(defconstant *storms2004* '((bonnie 65) (charley 150) (frances 145) (ivan 165) (jeanne 120) ))
+(terpri)
+(princ "**** test-case storm-categories ****")
+(print (storm-categories *storms2004*))
+(terpri)
+(princ "**** test-case storm-categories ****")
+(terpri)
+(princ "**** test-case storm-distribution ****")
+(print (storm-distribution *storms2004*))
+(terpri)
+(princ "**** test-case storm-distribution ****")
+

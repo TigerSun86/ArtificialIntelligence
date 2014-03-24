@@ -1,0 +1,1 @@
+The number of reachable states: 16. Depending on the action, when S = 0, L could be 0, 1, 2, 3, 4, 5; when S = 1, L could be 0, 5; when S = 2, L could be 0, 5; when S = 3, L could be 0, 1, 2, 3, 4, 5. So the sum is 16.

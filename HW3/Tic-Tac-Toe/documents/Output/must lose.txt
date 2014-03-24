@@ -1,0 +1,698 @@
+Please input the typy of player X (Human / AI):
+a
+Please input the depth of thought of AI player X:
+4
+Please input the typy of player O (Human / AI):
+a
+Please input the depth of thought of AI player O:
+6
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 0 0 0. utility of now: 7. utility of alpha: 7.
+order 1 action: 0 0 3. utility of now: 7. utility of alpha: 7.
+order 2 action: 3 0 0. utility of now: 7. utility of alpha: 7.
+order 3 action: 3 0 3. utility of now: 7. utility of alpha: 7.
+order 4 action: 1 1 1. utility of now: 7. utility of alpha: 7.
+order 5 action: 1 1 2. utility of now: 7. utility of alpha: 7.
+order 6 action: 2 1 1. utility of now: 7. utility of alpha: 7.
+order 7 action: 2 1 2. utility of now: 7. utility of alpha: 7.
+order 8 action: 1 2 1. utility of now: 7. utility of alpha: 7.
+order 9 action: 1 2 2. utility of now: 7. utility of alpha: 7.
+Player X made a move: 0 0 0
+made a move, utility: -7
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 0 0 3. utility of now: -54. utility of alpha: -54.
+order 1 action: 3 0 0. utility of now: -54. utility of alpha: -54.
+order 2 action: 3 0 3. utility of now: -54. utility of alpha: -54.
+order 3 action: 1 1 1. utility of now: -54. utility of alpha: -54.
+order 4 action: 2 2 2. utility of now: -54. utility of alpha: -54.
+order 5 action: 0 3 0. utility of now: -54. utility of alpha: -54.
+order 6 action: 0 3 3. utility of now: -54. utility of alpha: -54.
+order 7 action: 3 3 0. utility of now: -54. utility of alpha: -54.
+order 8 action: 3 3 3. utility of now: -54. utility of alpha: -54.
+order 9 action: 0 0 1. utility of now: -57. utility of alpha: -57.
+Player O made a move: 0 0 3
+made a move, utility: 54
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 3 0 0. utility of now: 60. utility of alpha: 142.
+order 1 action: 3 0 3. utility of now: 60. utility of alpha: 142.
+order 2 action: 0 3 0. utility of now: 60. utility of alpha: 142.
+order 3 action: 0 3 3. utility of now: 60. utility of alpha: 142.
+order 4 action: 3 3 0. utility of now: 60. utility of alpha: 142.
+order 5 action: 3 3 3. utility of now: 60. utility of alpha: 142.
+order 6 action: 1 1 1. utility of now: 51. utility of alpha: 142.
+order 7 action: 2 2 2. utility of now: 51. utility of alpha: 142.
+order 8 action: 1 0 0. utility of now: 48. utility of alpha: 142.
+order 9 action: 1 0 1. utility of now: 48. utility of alpha: 142.
+Player X made a move: 3 0 0
+made a move, utility: -60
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  | | | | |  | | | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 1 0 0. utility of now: -92. utility of alpha: -1012.
+order 1 action: 2 0 0. utility of now: -92. utility of alpha: -1012.
+order 2 action: 3 0 3. utility of now: -972. utility of alpha: -90.
+order 3 action: 0 3 0. utility of now: -972. utility of alpha: -90.
+order 4 action: 0 3 3. utility of now: -972. utility of alpha: -90.
+order 5 action: 3 3 0. utility of now: -972. utility of alpha: -90.
+order 6 action: 3 3 3. utility of now: -972. utility of alpha: -90.
+order 7 action: 1 1 2. utility of now: -990. utility of alpha: -90.
+order 8 action: 2 2 1. utility of now: -990. utility of alpha: -90.
+order 9 action: 1 0 3. utility of now: -993. utility of alpha: -90.
+Player O made a move: 3 0 3
+made a move, utility: 972
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  | | | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 1 0 0. utility of now: 8931. utility of alpha: 107.
+order 1 action: 2 0 0. utility of now: 8931. utility of alpha: 107.
+order 2 action: 1 0 3. utility of now: 31. utility of alpha: 888.
+order 3 action: 2 0 3. utility of now: 31. utility of alpha: 888.
+order 4 action: 0 3 0. utility of now: -751. utility of alpha: 1010.
+order 5 action: 0 3 3. utility of now: -751. utility of alpha: 1010.
+order 6 action: 3 3 0. utility of now: -751. utility of alpha: 1010.
+order 7 action: 3 3 3. utility of now: -751. utility of alpha: 1010.
+order 8 action: 1 1 1. utility of now: -867. utility of alpha: 1010.
+order 9 action: 2 1 1. utility of now: -867. utility of alpha: 1010.
+Player X made a move: 0 3 0
+made a move, utility: 751
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  | | | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 1 0 3. utility of now: 6919. utility of alpha: -1037.
+order 1 action: 2 0 3. utility of now: 6919. utility of alpha: -1037.
+order 2 action: 1 0 0. utility of now: -1981. utility of alpha: -908.
+order 3 action: 2 0 0. utility of now: -1981. utility of alpha: -908.
+order 4 action: 0 1 0. utility of now: -1981. utility of alpha: -908.
+order 5 action: 2 1 0. utility of now: -1981. utility of alpha: -908.
+order 6 action: 0 2 0. utility of now: -1981. utility of alpha: -908.
+order 7 action: 1 2 0. utility of now: -1981. utility of alpha: -908.
+order 8 action: 0 3 3. utility of now: -2754. utility of alpha: -908.
+order 9 action: 3 3 0. utility of now: -2754. utility of alpha: -908.
+Player O made a move: 1 0 0
+made a move, utility: 1981
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 1 2 0. utility of now: 9031. utility of alpha: 908.
+order 1 action: 0 1 0. utility of now: 9022. utility of alpha: 908.
+order 2 action: 2 1 0. utility of now: 9022. utility of alpha: 908.
+order 3 action: 0 2 0. utility of now: 9022. utility of alpha: 908.
+order 4 action: 1 0 3. utility of now: 131. utility of alpha: 908.
+order 5 action: 2 0 3. utility of now: 122. utility of alpha: 908.
+order 6 action: 0 3 3. utility of now: -562. utility of alpha: 908.
+order 7 action: 3 3 0. utility of now: -562. utility of alpha: 908.
+order 8 action: 3 3 3. utility of now: -562. utility of alpha: 908.
+order 9 action: 1 1 1. utility of now: -767. utility of alpha: 908.
+Player X made a move: 1 2 0
+made a move, utility: -9031
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  |X| | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 2 1 0. utility of now: -999. utility of alpha: -8882.
+order 1 action: 1 0 3. utility of now: -91001. utility of alpha: -9899024.
+order 2 action: 2 0 3. utility of now: -91099. utility of alpha: -9900004.
+order 3 action: 0 2 0. utility of now: -99990. utility of alpha: -9998913.
+order 4 action: 0 1 0. utility of now: -99999. utility of alpha: -9998913.
+order 5 action: 0 3 3. utility of now: -100772. utility of alpha: -9997031.
+order 6 action: 3 3 0. utility of now: -100772. utility of alpha: -9997031.
+order 7 action: 3 3 3. utility of now: -100772. utility of alpha: -9997031.
+order 8 action: 1 2 2. utility of now: -100879. utility of alpha: -9998002.
+order 9 action: 1 1 1. utility of now: -100888. utility of alpha: -9997993.
+Player O made a move: 2 1 0
+made a move, utility: 999
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 | | | | |  |X| | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 0 2 0. utility of now: 9002. utility of alpha: 897.
+order 1 action: 0 1 0. utility of now: 8913. utility of alpha: 897.
+order 2 action: 1 0 3. utility of now: 13. utility of alpha: 897.
+order 3 action: 2 0 3. utility of now: 4. utility of alpha: 897.
+order 4 action: 0 3 3. utility of now: -680. utility of alpha: 897.
+order 5 action: 3 3 0. utility of now: -680. utility of alpha: 897.
+order 6 action: 3 3 3. utility of now: -680. utility of alpha: 897.
+order 7 action: 1 2 2. utility of now: -787. utility of alpha: 897.
+order 8 action: 2 2 0. utility of now: -790. utility of alpha: 897.
+order 9 action: 3 2 0. utility of now: -799. utility of alpha: 897.
+Player X made a move: 0 2 0
+made a move, utility: -9002
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 | | | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 0 1 0. utility of now: -908. utility of alpha: 714.
+order 1 action: 1 0 3. utility of now: -91008. utility of alpha: -9899004.
+order 2 action: 2 0 3. utility of now: -91106. utility of alpha: -9899984.
+order 3 action: 2 2 0. utility of now: -99899. utility of alpha: -9997913.
+order 4 action: 3 2 0. utility of now: -99997. utility of alpha: -9998893.
+order 5 action: 0 3 3. utility of now: -100779. utility of alpha: -9997011.
+order 6 action: 3 3 0. utility of now: -100779. utility of alpha: -9997011.
+order 7 action: 3 3 3. utility of now: -100779. utility of alpha: -9997011.
+order 8 action: 2 1 3. utility of now: -100809. utility of alpha: -9997014.
+order 9 action: 1 2 2. utility of now: -100886. utility of alpha: -9997982.
+Player O made a move: 0 1 0
+made a move, utility: 908
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 2 2 0. utility of now: 8002. utility of alpha: -203.
+order 1 action: 3 2 0. utility of now: 7993. utility of alpha: -203.
+order 2 action: 3 1 0. utility of now: -907. utility of alpha: -203.
+order 3 action: 1 1 0. utility of now: -908. utility of alpha: -203.
+order 4 action: 1 0 3. utility of now: -996. utility of alpha: -203.
+order 5 action: 2 0 3. utility of now: -1005. utility of alpha: -203.
+order 6 action: 0 3 3. utility of now: -1689. utility of alpha: -203.
+order 7 action: 3 3 0. utility of now: -1689. utility of alpha: -203.
+order 8 action: 3 3 3. utility of now: -1689. utility of alpha: -203.
+order 9 action: 1 2 2. utility of now: -1796. utility of alpha: -203.
+Player X made a move: 2 2 0
+made a move, utility: -8002
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 3 2 0. utility of now: -897. utility of alpha: 815.
+order 1 action: 1 1 0. utility of now: -90008. utility of alpha: -9898993.
+order 2 action: 1 0 3. utility of now: -90908. utility of alpha: -9898093.
+order 3 action: 3 1 0. utility of now: -90997. utility of alpha: -9898983.
+order 4 action: 2 0 3. utility of now: -91006. utility of alpha: -9899073.
+order 5 action: 3 3 0. utility of now: -99689. utility of alpha: -9995902.
+order 6 action: 0 3 3. utility of now: -100679. utility of alpha: -9996100.
+order 7 action: 3 3 3. utility of now: -100679. utility of alpha: -9996100.
+order 8 action: 1 1 1. utility of now: -100697. utility of alpha: -9996082.
+order 9 action: 2 1 2. utility of now: -100707. utility of alpha: -9996083.
+Player O made a move: 3 2 0
+made a move, utility: 897
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| | | |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 1 1 0. utility of now: 8882. utility of alpha: -7233.
+order 1 action: 3 3 0. utility of now: 8002. utility of alpha: -7233.
+order 2 action: 1 0 3. utility of now: -1007. utility of alpha: -7222.
+order 3 action: 2 0 3. utility of now: -1016. utility of alpha: -7222.
+order 4 action: 3 1 0. utility of now: -1017. utility of alpha: -7222.
+order 5 action: 0 3 3. utility of now: -1700. utility of alpha: -6993.
+order 6 action: 3 3 3. utility of now: -1700. utility of alpha: -6993.
+order 7 action: 2 2 2. utility of now: -1718. utility of alpha: -6975.
+order 8 action: 1 2 2. utility of now: -1798. utility of alpha: -6975.
+order 9 action: 1 2 1. utility of now: -1817. utility of alpha: -6975.
+Player X made a move: 2 2 2
+made a move, utility: 1718
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  | | | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| |X| |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 1 1 0. utility of now: 6994. utility of alpha: -149.
+order 1 action: 1 0 3. utility of now: 6094. utility of alpha: -149.
+order 2 action: 2 0 3. utility of now: 5996. utility of alpha: -149.
+order 3 action: 3 1 0. utility of now: 5995. utility of alpha: -149.
+order 4 action: 3 3 3. utility of now: -2687. utility of alpha: -149.
+order 5 action: 3 3 0. utility of now: -2697. utility of alpha: -149.
+order 6 action: 1 1 1. utility of now: -2705. utility of alpha: -149.
+order 7 action: 2 2 1. utility of now: -2705. utility of alpha: -149.
+order 8 action: 3 2 3. utility of now: -2708. utility of alpha: -149.
+order 9 action: 2 2 3. utility of now: -2806. utility of alpha: -149.
+Player O made a move: 1 1 0
+made a move, utility: -6994
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O| | | |  |O| | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| |X| |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 3 1 0. utility of now: -826. utility of alpha: -6847.
+order 1 action: 3 3 3. utility of now: -90708. utility of alpha: -9895994.
+order 2 action: 1 2 1. utility of now: -90825. utility of alpha: -9896966.
+order 3 action: 1 1 1. utility of now: -90895. utility of alpha: -9897963.
+order 4 action: 2 2 1. utility of now: -90904. utility of alpha: -9897954.
+order 5 action: 3 2 3. utility of now: -90907. utility of alpha: -9897984.
+order 6 action: 2 2 3. utility of now: -90916. utility of alpha: -9897975.
+order 7 action: 1 0 3. utility of now: -99816. utility of alpha: -9996875.
+order 8 action: 2 0 3. utility of now: -99825. utility of alpha: -9996866.
+order 9 action: 1 2 2. utility of now: -100509. utility of alpha: -9994004.
+Player X made a move: 3 1 0
+made a move, utility: 826
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O| | | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| |X| |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 1 0 3. utility of now: 6975. utility of alpha: -6108.
+order 1 action: 2 0 3. utility of now: 6877. utility of alpha: -6108.
+order 2 action: 1 1 1. utility of now: -1726. utility of alpha: -4326.
+order 3 action: 3 3 3. utility of now: -1806. utility of alpha: -4326.
+order 4 action: 2 2 1. utility of now: -1824. utility of alpha: -4326.
+order 5 action: 3 2 3. utility of now: -1827. utility of alpha: -4326.
+order 6 action: 2 2 3. utility of now: -1925. utility of alpha: -4326.
+order 7 action: 1 2 1. utility of now: -2012. utility of alpha: -4326.
+order 8 action: 1 2 2. utility of now: -2796. utility of alpha: -4326.
+order 9 action: 0 3 3. utility of now: -2796. utility of alpha: -4326.
+Player O made a move: 1 1 1
+made a move, utility: 1726
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X| | | |  |X| |X| |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 1 2 1. utility of now: 6086. utility of alpha: 2450.
+order 1 action: 2 2 1. utility of now: 6007. utility of alpha: 2450.
+order 2 action: 3 2 3. utility of now: 5995. utility of alpha: 2450.
+order 3 action: 2 2 3. utility of now: 5986. utility of alpha: 2450.
+order 4 action: 1 2 2. utility of now: -2617. utility of alpha: 2450.
+order 5 action: 1 1 2. utility of now: -2715. utility of alpha: 2450.
+order 6 action: 2 1 2. utility of now: -2814. utility of alpha: 2450.
+order 7 action: 3 1 3. utility of now: -2816. utility of alpha: 2450.
+order 8 action: 1 0 3. utility of now: -2914. utility of alpha: 2450.
+order 9 action: 1 1 3. utility of now: -2914. utility of alpha: 2450.
+Player X made a move: 1 2 1
+made a move, utility: -6086
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X| | |  |X| |X| |  |O| | | |  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 3 2 3. utility of now: -1548. utility of alpha: -12233.
+order 1 action: 1 2 2. utility of now: -90726. utility of alpha: -9895995.
+order 2 action: 1 1 2. utility of now: -91716. utility of alpha: -9896094.
+order 3 action: 2 1 2. utility of now: -91735. utility of alpha: -9896086.
+order 4 action: 1 0 3. utility of now: -91737. utility of alpha: -9896106.
+order 5 action: 3 1 3. utility of now: -91737. utility of alpha: -9897096.
+order 6 action: 1 1 3. utility of now: -91746. utility of alpha: -9896097.
+order 7 action: 2 0 3. utility of now: -91844. utility of alpha: -9897077.
+order 8 action: 1 3 3. utility of now: -91844. utility of alpha: -9897077.
+order 9 action: 2 2 1. utility of now: -100438. utility of alpha: -9993016.
+Player O made a move: 3 2 3
+made a move, utility: 1548
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X| | |  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 1 2 2. utility of now: 5206. utility of alpha: 3322.
+order 1 action: 2 2 1. utility of now: 4127. utility of alpha: 3322.
+order 2 action: 1 2 3. utility of now: 4017. utility of alpha: 3322.
+order 3 action: 2 2 3. utility of now: 4017. utility of alpha: 3322.
+order 4 action: 3 1 3. utility of now: -3804. utility of alpha: 3322.
+order 5 action: 1 1 2. utility of now: -4595. utility of alpha: 3322.
+order 6 action: 3 3 3. utility of now: -4694. utility of alpha: 3322.
+order 7 action: 3 2 2. utility of now: -4705. utility of alpha: 3322.
+order 8 action: 2 1 2. utility of now: -4792. utility of alpha: 3322.
+order 9 action: 1 0 3. utility of now: -4794. utility of alpha: 3322.
+Player X made a move: 1 2 2
+made a move, utility: -5206
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X|X| |  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 1 2 3. utility of now: -2450. utility of alpha: -9796633.
+order 1 action: 3 1 3. utility of now: -82838. utility of alpha: -9797216.
+order 2 action: 3 2 2. utility of now: -91738. utility of alpha: -9896116.
+order 3 action: 1 1 2. utility of now: -92609. utility of alpha: -9895223.
+order 4 action: 2 1 2. utility of now: -92628. utility of alpha: -9895215.
+order 5 action: 3 3 3. utility of now: -92628. utility of alpha: -9895215.
+order 6 action: 1 0 3. utility of now: -92639. utility of alpha: -9895235.
+order 7 action: 3 2 1. utility of now: -92639. utility of alpha: -9895226.
+order 8 action: 1 1 3. utility of now: -92648. utility of alpha: -9895226.
+order 9 action: 2 0 3. utility of now: -92746. utility of alpha: -9896197.
+Player O made a move: 1 2 3
+made a move, utility: 2450
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X|X|O|  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | | |  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 0 3 3. utility of now: 4326. utility of alpha: 92322.
+order 1 action: 3 2 2. utility of now: 4216. utility of alpha: 92322.
+order 2 action: 2 2 3. utility of now: 4127. utility of alpha: 92322.
+order 3 action: 2 1 1. utility of now: 3434. utility of alpha: 92322.
+order 4 action: 0 2 2. utility of now: 3315. utility of alpha: 92322.
+order 5 action: 2 2 1. utility of now: 3237. utility of alpha: 92322.
+order 6 action: 3 1 3. utility of now: -4684. utility of alpha: 92322.
+order 7 action: 1 1 2. utility of now: -5377. utility of alpha: 92322.
+order 8 action: 2 1 2. utility of now: -5574. utility of alpha: 92322.
+order 9 action: 3 3 3. utility of now: -5574. utility of alpha: 92322.
+Player X made a move: 0 3 3
+made a move, utility: -4326
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O| | | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X|X|O|  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | |X|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 2 1 1. utility of now: -3322. utility of alpha: -9805311.
+order 1 action: 3 1 3. utility of now: -83740. utility of alpha: -9796633.
+order 1 action: 2 2 3. utility of now: -92551. utility of alpha: -9894544.
+order 2 action: 3 2 2. utility of now: -92640. utility of alpha: -9895533.
+order 3 action: 1 0 3. utility of now: -93443. utility of alpha: -9893663.
+order 4 action: 1 1 3. utility of now: -93452. utility of alpha: -9893654.
+order 5 action: 1 1 2. utility of now: -93511. utility of alpha: -9894541.
+order 6 action: 3 3 3. utility of now: -93521. utility of alpha: -9894641.
+order 7 action: 2 1 2. utility of now: -93530. utility of alpha: -9895622.
+order 8 action: 3 2 1. utility of now: -93541. utility of alpha: -9894643.
+order 9 action: 0 2 3. utility of now: -93641. utility of alpha: -9895643.
+Player O made a move: 2 1 1
+made a move, utility: 3322
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O|O| | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| | | |  |X|X|X|O|  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | |X|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 0 2 2. utility of now: 12233. utility of alpha: 9805311.
+order 1 action: 3 2 2. utility of now: 3333. utility of alpha: 9805311.
+order 2 action: 0 1 1. utility of now: 3244. utility of alpha: 9805311.
+order 3 action: 2 2 3. utility of now: 3244. utility of alpha: 9805311.
+order 4 action: 2 2 1. utility of now: 2363. utility of alpha: 9805311.
+order 5 action: 0 3 2. utility of now: 2334. utility of alpha: 9805311.
+order 6 action: 0 3 1. utility of now: 2235. utility of alpha: 9805311.
+order 7 action: 2 1 2. utility of now: -5467. utility of alpha: 9805311.
+order 8 action: 3 1 3. utility of now: -5567. utility of alpha: 9805311.
+order 9 action: 1 1 2. utility of now: -6359. utility of alpha: 9805311.
+Player X made a move: 0 2 2
+made a move, utility: -12233
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O|O| | |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| |X| |  |X|X|X|O|  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | |X|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player O is thinking...
+order 0 action: 0 1 1. utility of now: -92322. utility of alpha: -9893333.
+order 1 action: 3 2 2. utility of now: -92411. utility of alpha: -9894233.
+order 2 action: 2 1 2. utility of now: -182500. utility of alpha: -9805311.
+order 3 action: 3 1 3. utility of now: -182511. utility of alpha: -9805322.
+order 4 action: 2 2 3. utility of now: -191322. utility of alpha: -9903233.
+order 5 action: 0 2 3. utility of now: -191422. utility of alpha: -9904233.
+order 6 action: 1 0 3. utility of now: -192214. utility of alpha: -9902352.
+order 7 action: 1 1 3. utility of now: -192223. utility of alpha: -9902343.
+order 8 action: 1 1 2. utility of now: -192292. utility of alpha: -9903330.
+order 9 action: 3 3 3. utility of now: -192292. utility of alpha: -9903241.
+Player O made a move: 2 1 2
+made a move, utility: 182500
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O|O|O| |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| |X| |  |X|X|X|O|  |X| |X| |  |O| | |O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | |X|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+
+Player X is thinking...
+order 0 action: 3 2 2. utility of now: 9805311. utility of alpha: 9805311.
+order 1 action: 0 1 1. utility of now: 9805222. utility of alpha: 9805222.
+order 2 action: 3 1 3. utility of now: -84689. utility of alpha: -9796411.
+order 3 action: 2 1 3. utility of now: -85787. utility of alpha: -9807400.
+order 4 action: 2 2 3. utility of now: -174878. utility of alpha: -9718300.
+order 5 action: 0 2 3. utility of now: -174889. utility of alpha: -9718311.
+order 6 action: 2 2 1. utility of now: -175750. utility of alpha: -9717417.
+order 7 action: 0 2 1. utility of now: -175789. utility of alpha: -9717411.
+order 8 action: 0 3 2. utility of now: -175789. utility of alpha: -9717411.
+order 9 action: 0 3 1. utility of now: -175887. utility of alpha: -9718391.
+Player X made a move: 3 2 2
+made a move, utility: -9805311
+
+   Level 0    Level 1    Level 2    Level 3   
+
+   0 1 2 3    0 1 2 3    0 1 2 3    0 1 2 3   
+  ---------  ---------  ---------  ---------  
+0 |X| | |O|  |O| | | |  | | | | |  |X| | |O|  
+  ---------  ---------  ---------  ---------  
+1 |O| | | |  |O|O| | |  |O|O|O| |  |X| | | |  
+  ---------  ---------  ---------  ---------  
+2 |X| |X| |  |X|X|X|O|  |X| |X| |  |O| |X|O|  
+  ---------  ---------  ---------  ---------  
+3 |X| | |X|  | | | | |  | | | | |  | | | | |  
+  ---------  ---------  ---------  ---------  
+Winner is player X

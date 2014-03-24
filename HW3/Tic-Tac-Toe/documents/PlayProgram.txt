@@ -1,0 +1,13 @@
+PlayProgram module contains TicTacToe.java
+
+It is in charge of display various information, get input, set player and player type(human or AI), start a game
+
+User can choose X is human or AI and O is human or AI, and also can set the intellegence level of AI. It's really funny to watch two AI in different intelligence level playing with each other.
+
+To make AI faster at the beginning, AI will just evaluate one depth at the beginning, and after each move, AI will go deeper by a STEP, until reach the depth set by user.
+
+About the depth. 3,4 are in at most one or two second; 5,6 are kind of smart and fast; 8 is affordable, the worst move might be 30s to 1 minute; 10 is kind of reachable, one game will take 10 to 20 minutes. 12, I still haven't get a game solved by 12.
+
+Will it be useful and more funny to make move at beginning kind of randomly?
+
+There is still some situations AI won't fill in spot where opponent has a obvious 3 connected. It may come from my utility evaluating or my coding error... 

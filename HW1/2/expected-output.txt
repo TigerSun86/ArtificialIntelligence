@@ -1,0 +1,7 @@
+**** test-case storm-categories ****
+((BONNIE TROPICAL-STORM) (CHARLEY HURRICANE-CAT-4) (FRANCES HURRICANE-CAT-4) (IVAN HURRICANE-CAT-5) (JEANNE HURRICANE-CAT-3))
+**** test-case storm-categories ****
+**** test-case storm-distribution ****
+((TROPICAL-STORM 1) (HURRICANE-CAT-1 0) (HURRICANE-CAT-2 0) (HURRICANE-CAT-3 1) (HURRICANE-CAT-4 2) (HURRICANE-CAT-5 1))
+**** test-case storm-distribution ****
+

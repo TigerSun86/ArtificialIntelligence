@@ -1,0 +1,17 @@
+solution costs 28. the path is:
+[0,0] [0,5] [3,2] [0,2] [2,0] [2,5] [3,4] 
+explored nodes: 12
+[0,0] costG:  0 costF:  5 parent: [-1,-1]
+[0,5] costG:  6 costF:  8 parent: [0,0]
+[3,0] costG:  4 costF:  9 parent: [0,0]
+[0,3] costG:  8 costF: 10 parent: [3,0]
+[3,5] costG: 10 costF: 12 parent: [0,5]
+[3,2] costG: 10 costF: 13 parent: [0,5]
+[3,3] costG: 12 costF: 14 parent: [0,3]
+[1,5] costG: 15 costF: 17 parent: [3,3]
+[0,2] costG: 17 costF: 20 parent: [3,2]
+[2,0] costG: 20 costF: 25 parent: [0,2]
+[2,5] costG: 26 costF: 28 parent: [2,0]
+[3,4] costG: 28 costF: 28 parent: [2,5]
+unexplored but generated nodes: 1
+[1,0] costG: 26 costF: 31 parent: [1,5]

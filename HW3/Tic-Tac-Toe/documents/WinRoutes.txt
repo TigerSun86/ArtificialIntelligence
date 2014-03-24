@@ -1,0 +1,41 @@
+WinRoutes module is a structure designed for AI, it contains all possible routes of win. It can give utility for current state of game by evaluate every win routes.
+
+When a move was made, not only the board should be update, all the win routes related to this move spot should be update too. So when AI module want to evaluate utility, it's not necessary to traverse the entire board and mine the valuable information. AI just check all win routes so it can get these information had already been updated before, it's more efficient in case of time. And in aspect of space, number of all win routes is 76, number of spots in board is 64, it's not tremendously larger than spots number, so it's affordable.
+
+WinRoutes module might be improved in as this:
+Split the WinRoutes and Utility into 2 module, so the former can be concentrate on data structure, storing and updating, and the latter can concentrate on evaluating and kind of math thing.
+
+I use a 3 dimensional array to organize the routes concerning following requirements:
+ 1, to store all win routes, without any non-win routes
+ 2, route can be easily found by spot coordinate (different spot might has different types of win routes)
+ 3, the entire set of routes can be easily scanned
+
+For requirement 2 and 3, I decide to use a route ID to represent one unique route. So by given spot coordinate, you can easily get route ID, and by given ID, you can easily find the route. And it's also easy to scan the entire routes set by traversing the entire ID set. ID designed as following:
+
+routeID: one integer
+last 2 bits represent 2nd index;
+next 2 bits represent 1st index;
+next 3 bits represent route type id.
+
+There are 7 types of routes in the Board can potentially lead to a win:
+routeTypeID: represent different kinds of possible win route
+ straight:
+ 0, level changes, other remain
+ 1, row changes, other remain
+ 2, column changes, other remain
+ 
+ diagonal:
+ 3, level remains, others change
+ 4, row remains, others change
+ 5, column remains, others change
+ in 3,4,5, there are 2 kinds of relationship of others: direct ratio or
+ inverse ratio.
+
+ 6, all change
+ in 6, there are 4 kinds of relationship of all:
+ 0, all are direct ratio; 1, level is inverse ratio, others are direct ratio;
+ 2, row is inverse ratio, others are direct ratio; 3, column is inverse ratio,
+ others are direct ratio
+ 
+
+ 

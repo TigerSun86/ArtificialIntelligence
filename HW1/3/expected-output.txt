@@ -1,0 +1,16 @@
+**** test-case nested-member ****
+T
+NIL
+T
+T
+T
+T
+T
+T
+NIL
+T
+T
+T
+T
+NIL
+**** test-case nested-member ****

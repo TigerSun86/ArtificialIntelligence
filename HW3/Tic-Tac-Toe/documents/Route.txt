@@ -1,0 +1,9 @@
+Route class is for store the number of pieces from each player in this route. 
+
+Beside its efficiency for evaluating utility, it also efficiency for win testing, because when a move was made, the number of pieces of certain player became 4, so the win flag can be changed automatically, it's no need to scan the whole board after this move to tell is there a winner. 
+
+The Route structure might be improved like this:
+
+Combine numOfX and numOfO into one integer, or even a byte, so it will be space more efficient, which is really important when number of nodes exploded in the deep of tree. 
+
+The combination maybe can be done like the routeID in WinRoutes module, using the bit operation, and maybe there is a much faster way to get the number by player than "if else".

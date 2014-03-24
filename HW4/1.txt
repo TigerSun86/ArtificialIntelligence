@@ -1,0 +1,44 @@
+1.
+a. Smoke=>Smoke == !Smoke||Smoke == True
+Valid
+
+b. Smoke=>Fire == !Smoke||Fire
+It's neither because if Smoke == true and Fire == false, it will be false; if  Smoke == true and Fire == true, it will be true.
+
+c. (Smoke=>Fire)=>(!Smoke=>!Fire) == !(Smoke=>Fire)||(!Smoke=>!Fire) == !(!Smoke||Fire)||(Smoke||!Fire) == (Smoke&&!Fire)||(Smoke||!Fire) == (Smoke||(Smoke||!Fire))&&(!Fire||(Smoke||!Fire)) == (Smoke||!Fire)&&(Smoke||!Fire) == Smoke||!Fire
+It's neither.
+
+d. Smoke||Fire||!Fire == Smoke||True == True
+It's valid
+
+e. ((Smoke&&Heat)=>Fire)<=>((Smoke=>Fire)||(Heat=>Fire))
+== (!(Smoke&&Heat)||Fire)<=>((!Smoke||Fire)||(!Heat||Fire))
+== (!Smoke||!Heat||Fire)<=>(!Smoke||Fire||!Heat||Fire)
+== (!Smoke||!Heat||Fire)<=>(!Smoke||!Heat||Fire)
+== ((!Smoke||!Heat||Fire)=>(!Smoke||!Heat||Fire))
+&&((!Smoke||!Heat||Fire)=>(!Smoke||!Heat||Fire))
+Let A == !Smoke||!Heat||Fire
+So the sentence == (A=>A)&&(A=>A)
+Known from question (a) that (A=>A)==True
+So sentence == True&&True == True
+so it's valid
+
+f. (Smoke=>Fire)=>((Smoke&&Heat)=>Fire)
+== (!Smoke||Fire)=>(!Smoke||!Heat||Fire)
+== !(!Smoke||Fire)||(!Smoke||!Heat||Fire)
+== (Smoke&&!Fire)||(!Smoke||!Heat||Fire)
+== (Smoke||!Smoke||!Heat||Fire)&&(!Fire||!Smoke||!Heat||Fire)
+== (True||!Heat||Fire)&&(True||!Smoke||!Heat)
+== True&&True == True
+Valid
+
+g. Big||Dumb||(Big=>Dumb) 
+== Big||Dumb||(!Big||Dumb)
+== Big||Dumb||!Big||Dumb
+== True||Dumb == True
+Valid
+
+g2. (Big&&Dumb)||!Dumb
+== (Big||!Dumb)&&(Dumb||!Dumb)
+== (Big||!Dumb)&& True
+It's neither because Big||!Dumb is satisfiable. 

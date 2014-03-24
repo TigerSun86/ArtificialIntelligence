@@ -1,0 +1,10 @@
+sample commad line:
+java TestJug 0 0 astar
+java TestJug 0 5 usc
+
+a. States: water amount in small one (0 <= S <= 3) and water amount in large one (0 <= L <= 5)
+so the number possible states is 4 * 6 = 24
+The number of reachable states: 16. Depending on the action, when S = 0, L could be 0, 1, 2, 3, 4, 5; when S = 1, L could be 0, 5; when S = 2, L could be 0, 5; when S = 3, L could be 0, 1, 2, 3, 4, 5. So the sum is 16.
+
+b. The heuristic function is that assuming I have a measuring glass which can fill in or get out the amount of water exactly what I want for the large jug, and this action cost 1 unit, and additional 1 unit for moving each gallon of water (fill in, get out). This function only cares about the amount of water in the large jug.
+For example, there is 1 gallon water in large jug, the h should be 1 for action, and 3 for exactly what I will fill into the jug, so h equals 4. And if there is 5 gallon water in the large one, the h should be 1 for action, and 1 for exactly I want to take out of the jug, so it¡¯s 2.

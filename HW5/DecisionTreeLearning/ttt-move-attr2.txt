@@ -1,0 +1,11 @@
+top-left x o b
+top-middle x o b
+top-right x o b
+middle-left x o b
+middle-middle x o b
+middle-right x o b
+bottom-left x o b
+bottom-middle x o b
+bottom-right x o b
+blank-number 0 1 2 3 4 5 6 7 8 9
+x-wins win lose tie
