@@ -114,6 +114,7 @@ def train_agent(
                 writer.add_scalar('episode_reward', episode_r, log_step)
                 writer.add_scalar('average_q', stats_dict['average_q'], log_step)
                 writer.add_scalar('average_loss', stats_dict['average_loss'], log_step)
+                writer.add_scalar('episode_len', episode_len, log_step)
             episode_idx += 1
 
             if t == steps:
