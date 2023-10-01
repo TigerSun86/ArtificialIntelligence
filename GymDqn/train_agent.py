@@ -20,6 +20,19 @@ def save_agent(agent, t, outdir, logger, suffix=""):
     logger.info("Saved the agent to %s", dirname)
 
 
+def log_model_weights(writer, agent, log_step):
+    writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
+    for name, p in agent.model.named_parameters():
+        layer, attr = name.split(".", 1)
+        writer.add_histogram(f'model.{layer}/{attr}', p,  log_step, bins='auto')
+        if p.grad != None:
+            writer.add_histogram(f'model.{layer}/{attr}.grad', p.grad,  log_step, bins='auto')
+
+    for name, p in agent.target_model.named_parameters():
+        layer, attr = name.split(".", 1)
+        writer.add_histogram(f'target.{layer}/{attr}', p, log_step, bins='auto')
+
+
 def train_agent(
     agent,
     env,
@@ -56,14 +69,7 @@ def train_agent(
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
     try:
-        writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
-        for name, p in agent.model.named_parameters():
-            writer.add_histogram('model' + name, p,  log_step, bins='auto')
-            if p.grad != None:
-                writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
-
-        for name, p in agent.target_model.named_parameters():
-            writer.add_histogram('target' + name, p, log_step, bins='auto')
+        log_model_weights(writer, agent, log_step)
         while t < steps:
             while True:
                 # a_t
@@ -98,14 +104,7 @@ def train_agent(
                 agent.learn()
                 log_step += 1
                 if log_step % 10000 == 0:
-                    writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
-                    for name, p in agent.model.named_parameters():
-                        writer.add_histogram('model' + name, p,  log_step, bins='auto')
-                        if p.grad != None:
-                            writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
-
-                    for name, p in agent.target_model.named_parameters():
-                        writer.add_histogram('target' + name, p, log_step, bins='auto')
+                    log_model_weights(writer, agent, log_step)
 
             stats = agent.get_statistics()
             logger.info("statistics:%s", stats)
