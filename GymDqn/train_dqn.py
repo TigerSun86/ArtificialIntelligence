@@ -200,7 +200,7 @@ def main():
     rbuf = replay_buffer.ReplayBuffer(10**6)
 
     explorer = LinearDecayEpsilonGreedy(
-        start_epsilon=1.0,
+        start_epsilon=0.1,
         end_epsilon=0.1,
         decay_steps=10**6,
         random_action_func=lambda: np.random.randint(n_actions),

@@ -50,12 +50,20 @@ def train_agent(
     episode_len = 0
 
     timestr = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-    writer = SummaryWriter(f'./logs/pong_{timestr}_baseline')
+    writer = SummaryWriter(f'./logs/pong_{timestr}')
     # print(np.asarray(np.expand_dims(obs, 0)).shape)
     # in_obs = torch.from_numpy(agent.phi(np.expand_dims(obs, 0))).float().to(agent.device)
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
     try:
+        writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
+        for name, p in agent.model.named_parameters():
+            writer.add_histogram('model' + name, p,  log_step, bins='auto')
+            if p.grad:
+                writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
+
+        for name, p in agent.target_model.named_parameters():
+            writer.add_histogram('target' + name, p, log_step, bins='auto')
         while t < steps:
             while True:
                 # a_t
@@ -93,6 +101,8 @@ def train_agent(
                     writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
                     for name, p in agent.model.named_parameters():
                         writer.add_histogram('model' + name, p,  log_step, bins='auto')
+                        if p.grad:
+                            writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
 
                     for name, p in agent.target_model.named_parameters():
                         writer.add_histogram('target' + name, p, log_step, bins='auto')
