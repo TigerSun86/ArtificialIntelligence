@@ -59,7 +59,7 @@ def train_agent(
         writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
         for name, p in agent.model.named_parameters():
             writer.add_histogram('model' + name, p,  log_step, bins='auto')
-            if p.grad:
+            if p.grad != None:
                 writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
 
         for name, p in agent.target_model.named_parameters():
@@ -101,7 +101,7 @@ def train_agent(
                     writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
                     for name, p in agent.model.named_parameters():
                         writer.add_histogram('model' + name, p,  log_step, bins='auto')
-                        if p.grad:
+                        if p.grad != None:
                             writer.add_histogram('model' + name + '/grad', p.grad,  log_step, bins='auto')
 
                     for name, p in agent.target_model.named_parameters():
