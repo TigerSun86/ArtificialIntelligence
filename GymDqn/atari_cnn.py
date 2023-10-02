@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import chainer_default
+import action_value
 
 
 def constant_bias_initializer(bias=0.0):
@@ -77,3 +78,33 @@ class SmallAtariCNN(nn.Module):
             h = self.activation(layer(h))
         h_flat = h.view(h.size(0), -1)
         return self.activation(self.output(h_flat))
+
+
+class CopySmallAtariCNN(nn.Module):
+    def __init__(
+        self, n_actions, n_input_channels=4, n_output_channels=256, activation=F.relu, bias=0.1
+    ):
+        self.n_input_channels = n_input_channels
+        self.activation = activation
+        self.n_output_channels = n_output_channels
+        super().__init__()
+
+        self.conv1 = nn.Conv2d(n_input_channels, 16, 8, stride=4)
+        self.conv2 = nn.Conv2d(16, 32, 4, stride=2)
+        self.linear1 = nn.Linear(2592, n_output_channels)
+        self.linear2 = nn.Linear(n_output_channels, n_actions)
+        chainer_default.init_chainer_default(self.conv1)
+        chainer_default.init_chainer_default(self.conv2)
+        chainer_default.init_chainer_default(self.linear1)
+        chainer_default.init_chainer_default(self.linear2)
+        constant_bias_initializer(bias=bias)(self.conv1)
+        constant_bias_initializer(bias=bias)(self.conv2)
+        constant_bias_initializer(bias=bias)(self.linear1)
+
+    def forward(self, state):
+        h = state
+        h = self.activation(self.conv1(h))
+        h = self.activation(self.conv2(h))
+        h = h.view(h.size(0), -1)
+        h = self.activation(self.linear1(h))
+        return action_value.DiscreteActionValue(self.linear2(h))
