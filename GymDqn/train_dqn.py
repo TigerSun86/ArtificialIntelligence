@@ -178,7 +178,13 @@ def main():
             return action_value.DiscreteActionValue(q_values)
 
     n_actions = env.action_space.n
-    q_func = atari_cnn.CopySmallAtariCNN(n_actions)
+    # q_func = atari_cnn.OneLayerAtariCNN(n_actions)
+
+    q_func = nn.Sequential(
+        atari_cnn.LargeAtariCNN(),
+        chainer_default.init_chainer_default(nn.Linear(512, n_actions)),
+        DiscreteActionValueHead(),
+    )
 
     # Use the same hyperparameters as the Nature paper
 
