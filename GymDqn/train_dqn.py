@@ -178,13 +178,13 @@ def main():
             return action_value.DiscreteActionValue(q_values)
 
     n_actions = env.action_space.n
-    # q_func = atari_cnn.OneLayerAtariCNN(n_actions)
+    q_func = atari_cnn.CopySmallAtariCNN(n_actions)
 
-    q_func = nn.Sequential(
-        atari_cnn.LargeAtariCNN(),
-        chainer_default.init_chainer_default(nn.Linear(512, n_actions)),
-        DiscreteActionValueHead(),
-    )
+    # q_func = nn.Sequential(
+    #     atari_cnn.LargeAtariCNN(),
+    #     chainer_default.init_chainer_default(nn.Linear(512, n_actions)),
+    #     DiscreteActionValueHead(),
+    # )
 
     # Use the same hyperparameters as the Nature paper
 
@@ -212,8 +212,8 @@ def main():
         # Feature extractor
         return np.asarray(x, dtype=np.float32) / 255
 
-    Agent = dqn.DQN
-    agent = Agent(
+    agent = dqn.DQN(
+        n_actions,
         q_func,
         opt,
         rbuf,
@@ -226,6 +226,7 @@ def main():
         update_interval=1,
         batch_accumulator="sum",
         phi=phi,
+        epsilon=0.1,
     )
 
     train_agent.train_agent_with_evaluation(

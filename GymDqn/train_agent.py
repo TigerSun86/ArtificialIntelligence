@@ -1,6 +1,7 @@
 import datetime
 import logging
 import os
+import time
 import torch
 import numpy as np
 
@@ -54,10 +55,7 @@ def train_agent(
 
     # o_0, r_0
     obs = env.reset()
-
     t = step_offset
-    if hasattr(agent, "t"):
-        agent.t = step_offset
 
     eval_stats_history = []  # List of evaluation episode stats dict
     episode_len = 0
@@ -75,17 +73,15 @@ def train_agent(
                 # a_t
                 action = agent.act(obs)
                 # o_{t+1}, r_{t+1}
-                obs, r, done, info = env.step(action)
+                next_obs, r, done, info = env.step(action)
                 t += 1
                 log_step += 1
                 episode_r += r
                 episode_len += 1
                 reset = episode_len == max_episode_len or info.get("needs_reset", False)
                 # agent.observe(obs, r, done, reset)
-                agent.remember(obs, r, done, reset)
-
-                for hook in step_hooks:
-                    hook(env, agent, t)
+                agent.remember(obs, action, next_obs, r, done)
+                obs = next_obs
 
                 episode_end = done or reset or t == steps
                 if episode_end:
@@ -101,7 +97,7 @@ def train_agent(
 
             loop_count = episode_len
             for i in range(loop_count):
-                agent.learn()
+                agent.train()
                 log_step += 1
                 if log_step % 10000 == 0:
                     log_model_weights(writer, agent, log_step)

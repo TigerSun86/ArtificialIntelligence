@@ -175,7 +175,7 @@ def make_target_model_as_copy(model: torch.nn.Module) -> torch.nn.Module:
     return target_model
 
 
-class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
+class DQN(agent.AttributeSavingMixin, agent.Agent):
     """Deep Q-Network algorithm.
 
     Args:
@@ -212,6 +212,7 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
 
     def __init__(
         self,
+        n_actions: int,
         q_function: torch.nn.Module,
         optimizer: torch.optim.Optimizer,  # type: ignore  # somehow mypy complains
         replay_buffer: rb.AbstractReplayBuffer,
@@ -235,7 +236,9 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
         ] = batch_states.batch_states,
         recurrent: bool = False,
         max_grad_norm: Optional[float] = None,
+        epsilon: float = 0.1
     ):
+        self.n_actions = n_actions
         self.model = q_function
 
         if gpu is not None and gpu >= 0:
@@ -260,18 +263,7 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
         self.logger = logger
         self.batch_states = batch_states
         self.recurrent = recurrent
-        update_func: Callable[..., None]
-        update_func = self.update
-        self.replay_updater = rb.ReplayUpdater(
-            replay_buffer=replay_buffer,
-            update_func=update_func,
-            batchsize=minibatch_size,
-            episodic_update=recurrent,
-            episodic_update_len=episodic_update_len,
-            n_times_update=n_times_update,
-            replay_start_size=replay_start_size,
-            update_interval=update_interval,
-        )
+
         self.minibatch_size = minibatch_size
         self.episodic_update_len = episodic_update_len
         self.replay_start_size = replay_start_size
@@ -299,9 +291,13 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
         # Error checking
         if (
             self.replay_buffer.capacity is not None
-            and self.replay_buffer.capacity < self.replay_updater.replay_start_size
+            and self.replay_buffer.capacity < replay_start_size
         ):
             raise ValueError("Replay start size cannot exceed replay buffer capacity.")
+        self.epsilon = epsilon
+
+    def observe(self, obs: Any, reward: float, done: bool, reset: bool) -> None:
+        self.batch_observe([obs], [reward], [done], [reset])
 
     @property
     def cumulative_steps(self) -> int:
@@ -317,62 +313,15 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
             tau=self.soft_update_tau,
         )
 
-    def update(
-        self, experiences: List[List[Dict[str, Any]]], errors_out: Optional[list] = None
-    ) -> None:
-        """Update the model from experiences
-
-        Args:
-            experiences (list): List of lists of dicts.
-                For DQN, each dict must contains:
-                  - state (object): State
-                  - action (object): Action
-                  - reward (float): Reward
-                  - is_state_terminal (bool): True iff next state is terminal
-                  - next_state (object): Next state
-                  - weight (float, optional): Weight coefficient. It can be
-                    used for importance sampling.
-            errors_out (list or None): If set to a list, then TD-errors
-                computed from the given experiences are appended to the list.
-
-        Returns:
-            None
-        """
-
-        exp_batch = rb.batch_experiences(
-            experiences,
-            device=self.device,
-            phi=self.phi,
-            gamma=self.gamma,
-            batch_states=self.batch_states,
-        )
-
-        loss = self._compute_loss(exp_batch, errors_out=errors_out)
-
-        self.loss_record.append(float(loss.detach().cpu().numpy()))
-
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
-        self.optim_t += 1
-
     def _compute_target_values(self, exp_batch: Dict[str, Any]) -> torch.Tensor:
         batch_next_state = exp_batch["next_state"]
 
-        if self.recurrent:
-            target_next_qout, _ = recurrent.pack_and_forward(
-                self.target_model,
-                batch_next_state,
-                exp_batch["next_recurrent_state"],
-            )
-        else:
-            target_next_qout = self.target_model(batch_next_state)
-        next_q_max = target_next_qout.max
+        target_next_qout = self.target_model(batch_next_state)
+        next_q_max, _ = target_next_qout.max(1)
 
         batch_rewards = exp_batch["reward"]
         batch_terminal = exp_batch["is_state_terminal"]
         discount = exp_batch["discount"]
-
         return batch_rewards + discount * (1.0 - batch_terminal) * next_q_max
 
     def _compute_y_and_t(
@@ -383,16 +332,12 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
         # Compute Q-values for current states
         batch_state = exp_batch["state"]
 
-        if self.recurrent:
-            qout, _ = recurrent.pack_and_forward(
-                self.model, batch_state, exp_batch["recurrent_state"]
-            )
-        else:
-            qout = self.model(batch_state)
+        qout = self.model(batch_state)
 
         batch_actions = exp_batch["action"]
-        batch_q = torch.reshape(qout.evaluate_actions(batch_actions), (batch_size, 1))
-
+        index = batch_actions.long().unsqueeze(1)
+        raw_q_values = qout.gather(dim=1, index=index).flatten()
+        batch_q = torch.reshape(raw_q_values, (batch_size, 1))
         with torch.no_grad():
             batch_q_target = torch.reshape(
                 self._compute_target_values(exp_batch), (batch_size, 1)
@@ -440,120 +385,58 @@ class DQN(agent.AttributeSavingMixin, agent.BatchAgent):
                 batch_accumulator=self.batch_accumulator,
             )
 
-    def _evaluate_model_and_update_recurrent_states(
-        self, batch_obs: Sequence[Any]
-    ) -> action_value.ActionValue:
-        batch_xs = self.batch_states(batch_obs, self.device, self.phi)
-        if self.recurrent:
-            if self.training:
-                self.train_prev_recurrent_states = self.train_recurrent_states
-                batch_av, self.train_recurrent_states = recurrent.one_step_forward(
-                    self.model, batch_xs, self.train_recurrent_states
-                )
-            else:
-                batch_av, self.test_recurrent_states = recurrent.one_step_forward(
-                    self.model, batch_xs, self.test_recurrent_states
-                )
-        else:
-            batch_av = self.model(batch_xs)
-        return batch_av
+    def act(self, obs: Any) -> Any:
+        if self.training and np.random.rand() < self.epsilon:
+            return np.random.randint(self.n_actions)
 
-    def batch_act(self, batch_obs: Sequence[Any]) -> Sequence[Any]:
         with torch.no_grad(), contexts.evaluating(self.model):
-            batch_av = self._evaluate_model_and_update_recurrent_states(batch_obs)
-            batch_argmax = batch_av.greedy_actions.detach().cpu().numpy()
-        if self.training:
-            batch_action = [
-                self.explorer.select_action(
-                    self.t,
-                    lambda: batch_argmax[i],
-                    action_value=batch_av[i: i + 1],
-                )
-                for i in range(len(batch_obs))
-            ]
-            self.batch_last_obs = list(batch_obs)
-            self.batch_last_action = list(batch_action)
-        else:
-            batch_action = batch_argmax
-        return batch_action
+            batch_xs = self.batch_states(np.expand_dims(obs, 0), self.device, self.phi)
+            q_values = self.model(batch_xs)
+            argmax = q_values.detach().argmax().int().item()
+            return argmax
 
-    def remember(self, obs: Any, reward: float, done: bool, reset: bool) -> None:
+    def remember(self, obs: Any, aciton: Any, next_obs: Any, reward: float, done: bool) -> None:
         self.t += 1
         self._cumulative_steps += 1
 
-        if self.batch_last_obs[0] is not None:
-            assert self.batch_last_action[0] is not None
-            # Add a transition to the replay buffer
-            transition = {
-                "state": self.batch_last_obs[0],
-                "action": self.batch_last_action[0],
-                "reward": reward,
-                "next_state": obs,
-                "next_action": None,
-                "is_state_terminal": done,
-            }
+        # Add a transition to the replay buffer
+        transition = {
+            "state": obs,
+            "action": aciton,
+            "reward": reward,
+            "next_state": next_obs,
+            "next_action": None,
+            "is_state_terminal": done,
+        }
 
-            self.replay_buffer.append(env_id=0, **transition)
-            if reset or done:
-                self.batch_last_obs[0] = None
-                self.batch_last_action[0] = None
+        self.replay_buffer.append(env_id=0, **transition)
 
-    def learn(self):
-        self.replay_updater.update_if_necessary(self.t)
+    def train(self):
+        if len(self.replay_buffer) < self.replay_start_size:
+            return
+
+        transitions = self.replay_buffer.sample(self.minibatch_size)
+        exp_batch = rb.batch_experiences(
+            transitions,
+            device=self.device,
+            phi=self.phi,
+            gamma=self.gamma,
+            batch_states=self.batch_states,
+        )
+
+        loss = self._compute_loss(exp_batch)
+
+        self.loss_record.append(float(loss.detach().cpu().numpy()))
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        self.optim_t += 1
 
         # Update the target network
         if self.optim_t > 0 and self.optim_t % self.target_update_interval == 0:
             print(f"sync_target_network {self.optim_t}")
             self.sync_target_network()
-
-    def _batch_observe_train(
-        self,
-        batch_obs: Sequence[Any],
-        batch_reward: Sequence[float],
-        batch_done: Sequence[bool],
-        batch_reset: Sequence[bool],
-    ) -> None:
-        for i in range(len(batch_obs)):
-            self.t += 1
-            self._cumulative_steps += 1
-            # Update the target network
-            if self.t % self.target_update_interval == 0:
-                self.sync_target_network()
-            if self.batch_last_obs[i] is not None:
-                assert self.batch_last_action[i] is not None
-                # Add a transition to the replay buffer
-                transition = {
-                    "state": self.batch_last_obs[i],
-                    "action": self.batch_last_action[i],
-                    "reward": batch_reward[i],
-                    "next_state": batch_obs[i],
-                    "next_action": None,
-                    "is_state_terminal": batch_done[i],
-                }
-
-                self.replay_buffer.append(env_id=i, **transition)
-                if batch_reset[i] or batch_done[i]:
-                    self.batch_last_obs[i] = None
-                    self.batch_last_action[i] = None
-                    self.replay_buffer.stop_current_episode(env_id=i)
-            self.replay_updater.update_if_necessary(self.t)
-
-    def batch_observe(
-        self,
-        batch_obs: Sequence[Any],
-        batch_reward: Sequence[float],
-        batch_done: Sequence[bool],
-        batch_reset: Sequence[bool],
-    ) -> None:
-        if self.training:
-            return self._batch_observe_train(
-                batch_obs, batch_reward, batch_done, batch_reset
-            )
-
-    def _can_start_replay(self) -> bool:
-        if len(self.replay_buffer) < self.replay_start_size:
-            return False
-        return True
 
     def save_snapshot(self, dirname: str) -> None:
         self.save(dirname)

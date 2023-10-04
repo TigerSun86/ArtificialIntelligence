@@ -107,7 +107,7 @@ class CopySmallAtariCNN(nn.Module):
         h = self.activation(self.conv2(h))
         h = h.view(h.size(0), -1)
         h = self.activation(self.linear1(h))
-        return action_value.DiscreteActionValue(self.linear2(h))
+        return self.linear2(h)
 
 
 class OneLayerAtariCNN(nn.Module):
@@ -120,13 +120,17 @@ class OneLayerAtariCNN(nn.Module):
         super().__init__()
 
         self.conv1 = nn.Conv2d(n_input_channels, 16, 8, stride=4)
-        self.linear1 = nn.Linear(6400, n_actions)
+        self.linear1 = nn.Linear(6400, n_output_channels)
+        self.linear2 = nn.Linear(n_output_channels, n_actions)
         chainer_default.init_chainer_default(self.conv1)
         chainer_default.init_chainer_default(self.linear1)
+        chainer_default.init_chainer_default(self.linear2)
         constant_bias_initializer(bias=bias)(self.conv1)
+        constant_bias_initializer(bias=bias)(self.linear1)
 
     def forward(self, state):
         h = state
         h = self.activation(self.conv1(h))
         h = h.view(h.size(0), -1)
-        return action_value.DiscreteActionValue(self.linear1(h))
+        h = self.activation(self.linear1(h))
+        return action_value.DiscreteActionValue(self.linear2(h))
