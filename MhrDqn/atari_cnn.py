@@ -82,7 +82,7 @@ class SmallAtariCNN(nn.Module):
 
 class CopySmallAtariCNN(nn.Module):
     def __init__(
-        self, n_actions, n_input_channels=4, n_output_channels=256, activation=F.relu, bias=0.1
+        self, n_actions, n_input_channels=1, n_output_channels=256, activation=F.relu, bias=0.1
     ):
         self.n_input_channels = n_input_channels
         self.activation = activation
@@ -107,7 +107,7 @@ class CopySmallAtariCNN(nn.Module):
         h = self.activation(self.conv2(h))
         h = h.view(h.size(0), -1)
         h = self.activation(self.linear1(h))
-        return action_value.DiscreteActionValue(self.linear2(h))
+        return self.linear2(h)
 
 
 class OneLayerAtariCNN(nn.Module):

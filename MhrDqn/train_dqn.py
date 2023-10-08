@@ -3,6 +3,8 @@ import json
 import os
 import numpy as np
 import torch.nn as nn
+from mh_env import MhEnv
+from mod_reward_judge import ModRewardJudge
 import random_seed
 import prepare_output_dir
 import torch
@@ -18,6 +20,7 @@ import train_agent
 import action_value
 import explorer
 import replay_buffer
+import common_definitions
 
 
 def select_action_epsilon_greedily(epsilon, random_action_func, greedy_action_func):
@@ -154,78 +157,34 @@ def main():
     args.outdir = prepare_output_dir.prepare_output_dir(args, args.outdir)
     print("Output files are saved in {}".format(args.outdir))
 
-    def make_env(test):
-        # Use different random seeds for train and test envs
-        env_seed = test_seed if test else train_seed
-        env = atari_wrappers.wrap_deepmind(
-            atari_wrappers.make_atari(args.env, max_frames=None),
-            episode_life=not test,
-            clip_rewards=not test,
-        )
-        env.seed(int(env_seed))
-        if test:
-            # Randomize actions like epsilon-greedy in evaluation as well
-            env = randomize_action.RandomizeAction(env, 0.05)
-        if args.render:
-            env = render.Render(env)
-        return env
+    judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
+    env = MhEnv(judge)
 
-    env = make_env(test=False)
-    eval_env = make_env(test=True)
-
-    class DiscreteActionValueHead(nn.Module):
-        def forward(self, q_values):
-            return action_value.DiscreteActionValue(q_values)
-
-    n_actions = env.action_space.n
-    # q_func = atari_cnn.OneLayerAtariCNN(n_actions)
-
-    q_func = nn.Sequential(
-        atari_cnn.LargeAtariCNN(),
-        chainer_default.init_chainer_default(nn.Linear(512, n_actions)),
-        DiscreteActionValueHead(),
-    )
-
-    # Use the same hyperparameters as the Nature paper
-
-    # opt = pfrl.optimizers.RMSpropEpsInsideSqrt(
-    #     q_func.parameters(),
-    #     lr=2.5e-4,
-    #     alpha=0.95,
-    #     momentum=0.0,
-    #     eps=1e-2,
-    #     centered=True,
-    # )
+    n_actions = env.get_action_number()
+    q_func = atari_cnn.CopySmallAtariCNN(n_actions, n_input_channels=1)
 
     opt = torch.optim.Adam(q_func.parameters(), lr=2.5e-4)
 
     rbuf = replay_buffer.ReplayBuffer(10**6)
 
-    explorer = LinearDecayEpsilonGreedy(
-        start_epsilon=0.1,
-        end_epsilon=0.1,
-        decay_steps=10**6,
-        random_action_func=lambda: np.random.randint(n_actions),
-    )
-
     def phi(x):
         # Feature extractor
-        return np.asarray(x, dtype=np.float32) / 255
+        return x
 
-    Agent = dqn.DQN
-    agent = Agent(
+    agent = dqn.DQN(
+        n_actions,
         q_func,
         opt,
         rbuf,
         gpu=args.gpu,
         gamma=0.99,
-        explorer=explorer,
         replay_start_size=args.replay_start_size,
         target_update_interval=10**4,
         clip_delta=True,
         update_interval=1,
         batch_accumulator="sum",
         phi=phi,
+        epsilon=0.1,
     )
 
     train_agent.train_agent_with_evaluation(
@@ -236,8 +195,8 @@ def main():
         eval_n_episodes=None,
         eval_interval=args.eval_interval,
         outdir=args.outdir,
+        train_max_episode_len=common_definitions.EPISODE_STEP_COUNT,
         save_best_so_far_agent=True,
-        eval_env=eval_env,
     )
 
 

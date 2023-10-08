@@ -264,12 +264,6 @@ class ReplayUpdater(object):
             return False
 
         for _ in range(self.n_times_update):
-            if self.episodic_update:
-                episodes = self.replay_buffer.sample_episodes(
-                    self.batchsize, self.episodic_update_len
-                )
-                self.update_func(episodes)
-            else:
-                transitions = self.replay_buffer.sample(self.batchsize)
-                self.update_func(transitions)
+            transitions = self.replay_buffer.sample(self.batchsize)
+            self.update_func(transitions)
         return True

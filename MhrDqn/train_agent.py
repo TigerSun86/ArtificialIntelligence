@@ -1,8 +1,13 @@
+from collections import deque
 import datetime
 import logging
 import os
+import time
 import torch
 import numpy as np
+import common_definitions
+import dqn
+import mh_env
 
 from torch.utils.tensorboard import SummaryWriter
 
@@ -21,7 +26,7 @@ def save_agent(agent, t, outdir, logger, suffix=""):
 
 
 def log_model_weights(writer, agent, log_step):
-    writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
+    writer.add_scalar('Epsilon', agent.epsilon, log_step)
     for name, p in agent.model.named_parameters():
         layer, attr = name.split(".", 1)
         writer.add_histogram(f'model.{layer}/{attr}', p,  log_step, bins='auto')
@@ -34,8 +39,8 @@ def log_model_weights(writer, agent, log_step):
 
 
 def train_agent(
-    agent,
-    env,
+    agent: dqn.DQN,
+    env: mh_env.MhEnv,
     steps,
     outdir,
     checkpoint_freq=None,
@@ -52,64 +57,97 @@ def train_agent(
     episode_r = 0
     episode_idx = 0
 
-    # o_0, r_0
-    obs = env.reset()
-
     t = step_offset
-    if hasattr(agent, "t"):
-        agent.t = step_offset
 
     eval_stats_history = []  # List of evaluation episode stats dict
     episode_len = 0
+    episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
 
     timestr = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-    writer = SummaryWriter(f'./logs/pong_{timestr}')
+    writer = SummaryWriter(f'./logs/mhr_{timestr}')
     # print(np.asarray(np.expand_dims(obs, 0)).shape)
     # in_obs = torch.from_numpy(agent.phi(np.expand_dims(obs, 0))).float().to(agent.device)
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
+
+    env.setup_tetranadon()
     try:
         log_model_weights(writer, agent, log_step)
         while t < steps:
+            obs = env.reset()
+            img = env.format_img_for_training(obs[1])
+            total_time = 0.
+            last_time = time.time()
+            episode_steps = 0
+            episode_examples.clear()
+            q_sum = 0.
+
             while True:
                 # a_t
-                action = agent.act(obs)
+                action, q_value = agent.act(np.expand_dims(img, 0))
                 # o_{t+1}, r_{t+1}
-                obs, r, done, info = env.step(action)
+                next_obs, r, done, info = env.step_without_reward(action)
+                episode_examples.append((obs, action, next_obs, done))
+                # agent.remember(obs, action, next_obs, r, done)
+
                 t += 1
                 log_step += 1
-                episode_r += r
+                episode_steps += 1
                 episode_len += 1
-                reset = episode_len == max_episode_len or info.get("needs_reset", False)
-                # agent.observe(obs, r, done, reset)
-                agent.remember(obs, r, done, reset)
+                reset = episode_len == max_episode_len
+                obs = next_obs
+                img = env.format_img_for_training(obs[1])
 
-                for hook in step_hooks:
-                    hook(env, agent, t)
+                q_sum += q_value if not np.isnan(q_value) else 0
+
+                print('step {}, {} took {:.3f} seconds, q: {:.2E}, a: {}'.format(
+                    episode_steps, t, time.time()-last_time,  q_value, action))
+                total_time += time.time()-last_time
+                last_time = time.time()
 
                 episode_end = done or reset or t == steps
                 if episode_end:
                     break
 
-            logger.info(
-                "step:%s episode_len: %s episode:%s R:%s",
-                t,
-                episode_len,
-                episode_idx,
-                episode_r,
-            )
+            env.release_all_buttons()
 
-            loop_count = episode_len
+            print('episode {} took {}/{} steps, {:.3f} seconds, avg took {:.3f} seconds, q_avg {:.2E}'.format(
+                episode_idx, episode_steps, t, total_time, total_time / episode_steps, q_sum / episode_steps))
+
+            if not done:
+                env.pause_game()
+
+            last_time = time.time()
+            episode_r = 0.
+            for idx, example in enumerate(episode_examples):
+                obs, action, next_obs, done = example
+                (_, img) = obs
+                (_, next_img) = next_obs
+                state = np.expand_dims(env.format_img_for_training(img), 0)
+                next_state = np.expand_dims(env.format_img_for_training(next_img), 0)
+                reward = env.evaluate_reward(next_obs)
+                episode_r += reward
+                if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
+                    print("Step {}, reward {:.4f}".format(idx, reward))
+
+                agent.remember(state, action, next_state, r, done)
+
+            print('evaluating reward took {:.3f} seconds, episode_r {:.3f}, reward_avg {:.3f}'.format(
+                time.time()-last_time, episode_r, episode_r / episode_steps))
+
+            last_time = time.time()
+            loop_count = episode_len * 4
             for i in range(loop_count):
-                agent.learn()
+                agent.train()
                 log_step += 1
                 if log_step % 10000 == 0:
                     log_model_weights(writer, agent, log_step)
 
             stats = agent.get_statistics()
-            logger.info("statistics:%s", stats)
+            logger.info("training took %f seconds, statistics:%s", time.time()-last_time, stats)
             stats_dict = dict(stats)
             if writer:
+                writer.add_scalar('average_step_reward', episode_r / episode_len, log_step)
                 writer.add_scalar('episode_reward', episode_r, log_step)
                 writer.add_scalar('average_q', stats_dict['average_q'], log_step)
                 writer.add_scalar('average_loss', stats_dict['average_loss'], log_step)
@@ -118,6 +156,14 @@ def train_agent(
 
             if t == steps:
                 break
+
+            if not done:
+                env.resume_game()
+
+            if done:
+                env.exit_quest()
+                env.setup_tetranadon()
+
             # Start a new episode
             episode_r = 0
             episode_len = 0
