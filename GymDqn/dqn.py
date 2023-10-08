@@ -18,7 +18,6 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 import contexts
 import action_value
 import recurrent
-import explorer
 import replay_buffer2 as rb
 import copy_param
 import batch_states
@@ -183,7 +182,6 @@ class DQN(agent.AttributeSavingMixin, agent.Agent):
         optimizer (Optimizer): Optimizer that is already setup
         replay_buffer (ReplayBuffer): Replay buffer
         gamma (float): Discount factor
-        explorer (Explorer): Explorer that specifies an exploration strategy.
         gpu (int): GPU device id if not None nor negative.
         replay_start_size (int): if the replay buffer's size is less than
             replay_start_size, skip update
@@ -217,7 +215,6 @@ class DQN(agent.AttributeSavingMixin, agent.Agent):
         optimizer: torch.optim.Optimizer,  # type: ignore  # somehow mypy complains
         replay_buffer: rb.AbstractReplayBuffer,
         gamma: float,
-        explorer: explorer.Explorer,
         gpu: Optional[int] = None,
         replay_start_size: int = 50000,
         minibatch_size: int = 32,
@@ -251,7 +248,6 @@ class DQN(agent.AttributeSavingMixin, agent.Agent):
         self.replay_buffer = replay_buffer
         self.optimizer = optimizer
         self.gamma = gamma
-        self.explorer = explorer
         self.gpu = gpu
         self.target_update_interval = target_update_interval
         self.clip_delta = clip_delta

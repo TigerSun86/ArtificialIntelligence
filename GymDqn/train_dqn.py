@@ -173,10 +173,6 @@ def main():
     env = make_env(test=False)
     eval_env = make_env(test=True)
 
-    class DiscreteActionValueHead(nn.Module):
-        def forward(self, q_values):
-            return action_value.DiscreteActionValue(q_values)
-
     n_actions = env.action_space.n
     q_func = atari_cnn.CopySmallAtariCNN(n_actions)
 
@@ -186,27 +182,9 @@ def main():
     #     DiscreteActionValueHead(),
     # )
 
-    # Use the same hyperparameters as the Nature paper
-
-    # opt = pfrl.optimizers.RMSpropEpsInsideSqrt(
-    #     q_func.parameters(),
-    #     lr=2.5e-4,
-    #     alpha=0.95,
-    #     momentum=0.0,
-    #     eps=1e-2,
-    #     centered=True,
-    # )
-
     opt = torch.optim.Adam(q_func.parameters(), lr=2.5e-4)
 
-    rbuf = replay_buffer.ReplayBuffer(10**6)
-
-    explorer = LinearDecayEpsilonGreedy(
-        start_epsilon=0.1,
-        end_epsilon=0.1,
-        decay_steps=10**6,
-        random_action_func=lambda: np.random.randint(n_actions),
-    )
+    rbuf = replay_buffer.ReplayBuffer(10**4)
 
     def phi(x):
         # Feature extractor
@@ -219,7 +197,6 @@ def main():
         rbuf,
         gpu=args.gpu,
         gamma=0.99,
-        explorer=explorer,
         replay_start_size=args.replay_start_size,
         target_update_interval=10**4,
         clip_delta=True,

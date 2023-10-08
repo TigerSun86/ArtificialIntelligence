@@ -22,7 +22,7 @@ def save_agent(agent, t, outdir, logger, suffix=""):
 
 
 def log_model_weights(writer, agent, log_step):
-    writer.add_scalar('Epsilon', agent.explorer.epsilon, log_step)
+    writer.add_scalar('Epsilon', agent.epsilon, log_step)
     for name, p in agent.model.named_parameters():
         layer, attr = name.split(".", 1)
         writer.add_histogram(f'model.{layer}/{attr}', p,  log_step, bins='auto')
@@ -79,7 +79,6 @@ def train_agent(
                 episode_r += r
                 episode_len += 1
                 reset = episode_len == max_episode_len or info.get("needs_reset", False)
-                # agent.observe(obs, r, done, reset)
                 agent.remember(obs, action, next_obs, r, done)
                 obs = next_obs
 
