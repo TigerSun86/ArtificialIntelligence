@@ -70,7 +70,8 @@ def train_agent(
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
 
-    env.setup_tetranadon()
+    env.operator.wait_before_start()
+    env.start_quest()
     try:
         log_model_weights(writer, agent, log_step)
         while t < steps:
@@ -115,7 +116,7 @@ def train_agent(
                 episode_idx, episode_steps, t, total_time, total_time / episode_steps, q_sum / episode_steps))
 
             if not done:
-                env.pause_game()
+                env.operator.pause_game()
 
             last_time = time.time()
             episode_r = 0.
@@ -158,11 +159,11 @@ def train_agent(
                 break
 
             if not done:
-                env.resume_game()
+                env.operator.resume_game()
 
             if done:
-                env.exit_quest()
-                env.setup_tetranadon()
+                env.operator.exit_quest()
+                env.start_quest()
 
             # Start a new episode
             episode_r = 0

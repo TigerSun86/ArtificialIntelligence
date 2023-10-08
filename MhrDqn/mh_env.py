@@ -8,6 +8,7 @@ import directkeys as keys
 import grabscreenv2
 from display_text import DisplayText
 import common_definitions
+from mhr_game_operator import MhrGameOperator
 
 KEY_MOVE_FORWARD = keys.KEY_W
 KEY_MOVE_BACKWARDS = keys.KEY_S
@@ -48,6 +49,8 @@ class MhEnv:
     def __init__(self, judge):
         self._elapsed_steps = 0
 
+        self.operator = MhrGameOperator()
+
         self.save_img = False
 
         # self.buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
@@ -65,6 +68,7 @@ class MhEnv:
                             {KEY_NORMAL_ATTACK},
                             {KEY_DODGE},
                             {KEY_MOVE_FORWARD, KEY_NORMAL_ATTACK},
+                            {KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK},
                             ]
 
         self.need_wait_between_steps = True
@@ -151,375 +155,19 @@ class MhEnv:
         damage = self.judge.evaluate(observation)
         return damage
 
-    def exit_quest(self):
-        time.sleep(15)
-        keys.PressKey(KEY_MOVE_FORWARD)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_FORWARD)
-        time.sleep(0.2)
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(10)
-
     def reset(self):
         self._elapsed_steps = 0
         self.last_step_time = time.time()
 
         self.release_all_buttons()
 
-        # self.setup_train()
-
         observation = (time.time(), self.screenshot())
         return observation
 
-    def pause_game(self):
-        keys.PressKey(KEY_OPEN_START_MENU)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_OPEN_START_MENU)
-        time.sleep(0.2)
-        keys.PressKey(KEY_MOVE_LEFT)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_LEFT)
-        time.sleep(0.2)
-        keys.PressKey(KEY_MOVE_FORWARD)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_FORWARD)
-        time.sleep(0.2)
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-    def resume_game(self):
-        keys.PressKey(KEY_OPEN_START_MENU)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_OPEN_START_MENU)
-        time.sleep(0.2)
-
-    def setup_wroggi(self):
+    def start_quest(self):
         self.judge.reset_is_quest_end()
-
-        time.sleep(4)
-
-        keys.PressKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        for i in range(2):
-            keys.PressKey(KEY_MOVE_LEFT)
-            time.sleep(0.2)
-            keys.ReleaseKey(KEY_MOVE_LEFT)
-            time.sleep(0.5)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        for i in range(3):
-            keys.PressKey(KEY_MOVE_FORWARD)
-            time.sleep(0.2)
-            keys.ReleaseKey(KEY_MOVE_FORWARD)
-            time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        for i in range(4):
-            keys.PressKey(KEY_MOVE_BACKWARDS)
-            time.sleep(0.2)
-            keys.ReleaseKey(KEY_MOVE_BACKWARDS)
-            time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_DODGE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_DODGE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_DODGE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_DODGE)
-        time.sleep(0.2)
-
-        time.sleep(10)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(3)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-    def setup_tetranadon(self):
-        self.judge.reset_is_quest_end()
-
-        time.sleep(4)
-
-        keys.PressKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        for i in range(5):
-            keys.PressKey(KEY_MOVE_FORWARD)
-            time.sleep(0.2)
-            keys.ReleaseKey(KEY_MOVE_FORWARD)
-            time.sleep(0.5)
-
-        for i in range(2):
-            keys.PressKey(KEY_MOVE_RIGHT)
-            time.sleep(0.2)
-            keys.ReleaseKey(KEY_MOVE_RIGHT)
-            time.sleep(0.5)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_MOVE_RIGHT)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_RIGHT)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_DODGE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_DODGE)
-        time.sleep(0.2)
-
-        keys.PressKey(KEY_DODGE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_DODGE)
-        time.sleep(0.2)
-
-        time.sleep(10)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(10)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-    def setup_train(self):
-        keys.PressKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_OPEN_DETAILED_MAP)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_MOVE_BACKWARDS)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_EXAMINE)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_EXAMINE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-        keys.PressKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_SPECIAL_ATTACK)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_WIREBUG_RETICLE)
-        time.sleep(0.2)
-
-        time.sleep(2)
-
-        keys.PressKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-        keys.ReleaseKey(KEY_LOCK_ON_TARGET)
-        time.sleep(0.2)
-
-        time.sleep(2)
+        # self.operator.setup_wroggi()
+        self.operator.setup_tetranadon()
 
     def render(self):
         if hasattr(self.screenshot_for_render, "__len__") and len(self.screenshot_for_render) > 0:

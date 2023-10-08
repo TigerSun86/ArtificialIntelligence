@@ -6,3 +6,5 @@ GAME_LOG_PATH = r"C:\Games\Steam\steamapps\common\MonsterHunterRise\reframework\
 GAME_SCREEN_RESOLUTION = (1280, 720)
 STEP_BASE_REWARD = -0.001
 EPISODE_STEP_COUNT = 500
+
+GAME_LOADING_SECONDS = 10
