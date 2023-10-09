@@ -133,6 +133,22 @@ class MhrGameOperator:
         time.sleep(2)
         self.lock_on_target()
 
+    def go_to_infernal_springs_center(self):
+        self.wirebug_forward()
+        time.sleep(3)
+        self.move_right()
+        self.wirebug_forward()
+        time.sleep(3)
+        self.move_left()
+        self.move_left()
+        self.examine()
+        time.sleep(7)
+        self.lock_on_target()
+        time.sleep(2)
+        self.move_forward()
+        self.wirebug_forward()
+        time.sleep(2)
+
     def launch_quest(self):
         keys.PressKey(KEY_DODGE)
         self.wait_for_key_press()
@@ -212,6 +228,28 @@ class MhrGameOperator:
 
         self.wait_for_game_loading()
         self.go_to_arena_center()
+
+    def setup_kuluyaku(self):
+        self.open_master_rank_quest_menu()
+
+        self.examine()
+        self.cursor_down()
+        self.examine()
+
+        self.cursor_down()
+        self.cursor_down()
+        self.examine()
+        self.wait_for_menu_loading()
+
+        self.cursor_down()
+        self.examine()
+        self.examine()
+
+        self.wait_for_menu_loading()
+        self.launch_quest()
+
+        self.wait_for_game_loading()
+        self.go_to_infernal_springs_center()
 
     def exit_quest(self):
         time.sleep(15)

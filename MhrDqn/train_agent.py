@@ -26,7 +26,7 @@ def save_agent(agent, t, outdir, logger, suffix=""):
 
 
 def log_model_weights(writer, agent, log_step):
-    writer.add_scalar('Epsilon', agent.epsilon, log_step)
+    # writer.add_scalar('Epsilon', agent.epsilon, log_step)
     for name, p in agent.model.named_parameters():
         layer, attr = name.split(".", 1)
         writer.add_histogram(f'model.{layer}/{attr}', p,  log_step, bins='auto')
@@ -70,13 +70,15 @@ def train_agent(
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
 
+    obs = env.reset()
+    env.render()
+    img = env.format_img_for_training(obs[1])
+
     env.operator.wait_before_start()
     env.start_quest()
     try:
         log_model_weights(writer, agent, log_step)
         while t < steps:
-            obs = env.reset()
-            img = env.format_img_for_training(obs[1])
             total_time = 0.
             last_time = time.time()
             episode_steps = 0
@@ -90,6 +92,7 @@ def train_agent(
                 next_obs, r, done, info = env.step_without_reward(action)
                 episode_examples.append((obs, action, next_obs, done))
                 # agent.remember(obs, action, next_obs, r, done)
+                env.render()
 
                 t += 1
                 log_step += 1
@@ -169,6 +172,7 @@ def train_agent(
             episode_r = 0
             episode_len = 0
             obs = env.reset()
+            img = env.format_img_for_training(obs[1])
             if checkpoint_freq and t % checkpoint_freq == 0:
                 save_agent(agent, t, outdir, logger, suffix="_checkpoint")
     except (Exception, KeyboardInterrupt):

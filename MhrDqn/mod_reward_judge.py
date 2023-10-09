@@ -32,8 +32,8 @@ class ModRewardJudge:
             else:
                 # The log happened after the state, so it belongs to the next state.
                 break
-        reward /= 1000
-        # reward += common_definitions.STEP_BASE_REWARD
+        reward /= 10.
+        reward += common_definitions.STEP_BASE_REWARD
         return reward
 
     def load_file_to_buffer(self):

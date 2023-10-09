@@ -66,7 +66,7 @@ class MhEnv:
         self.dqn_actions = [{},
                             {KEY_MOVE_FORWARD},
                             {KEY_NORMAL_ATTACK},
-                            {KEY_DODGE},
+                            {KEY_MOVE_FORWARD, KEY_DODGE},
                             {KEY_MOVE_FORWARD, KEY_NORMAL_ATTACK},
                             {KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK},
                             ]
@@ -114,6 +114,7 @@ class MhEnv:
         # )
 
         self.screenshot_for_render = None
+        self.is_rendering = False
 
         self.judge = judge
 
@@ -159,14 +160,19 @@ class MhEnv:
         self._elapsed_steps = 0
         self.last_step_time = time.time()
 
+        self.kd.close()
         self.release_all_buttons()
+        if self.is_rendering:
+            self.is_rendering = False
+            cv2.destroyWindow('window1')
 
-        observation = (time.time(), self.screenshot())
+        self.screenshot_for_render = self.screenshot()
+        observation = (time.time(), self.screenshot_for_render)
         return observation
 
     def start_quest(self):
         self.judge.reset_is_quest_end()
-        self.operator.setup_wroggi()
+        self.operator.setup_kuluyaku()
         # self.operator.setup_tetranadon()
 
     def render(self):
@@ -175,6 +181,7 @@ class MhEnv:
             img = cv2.resize(img, (self.img_width, self.img_height))
             img = cv2.resize(img, (self.img_width*5, self.img_height*5))
             cv2.imshow('window1', img)
+            self.is_rendering = True
 
     def close(self):
         pass
@@ -239,7 +246,7 @@ class MhEnv:
                 # print('Released {}'.format(bstr))
             msg += "{}:{},".format(bstr, int(self.button_states[idx]))
 
-        self.kd.close()
+        self.kd.display(msg)
 
 
 def main():
