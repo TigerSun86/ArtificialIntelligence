@@ -166,8 +166,8 @@ class MhEnv:
 
     def start_quest(self):
         self.judge.reset_is_quest_end()
-        # self.operator.setup_wroggi()
-        self.operator.setup_tetranadon()
+        self.operator.setup_wroggi()
+        # self.operator.setup_tetranadon()
 
     def render(self):
         if hasattr(self.screenshot_for_render, "__len__") and len(self.screenshot_for_render) > 0:

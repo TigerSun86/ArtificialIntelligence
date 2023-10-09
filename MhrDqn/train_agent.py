@@ -137,7 +137,7 @@ def train_agent(
                 time.time()-last_time, episode_r, episode_r / episode_steps))
 
             last_time = time.time()
-            loop_count = episode_len * 4
+            loop_count = episode_len
             for i in range(loop_count):
                 agent.train()
                 log_step += 1

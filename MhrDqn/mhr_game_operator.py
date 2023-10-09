@@ -150,7 +150,7 @@ class MhrGameOperator:
         self.examine()
         self.wait_for_menu_loading()
 
-        for i in range(2):
+        for i in range(3):
             self.move_left()
 
         self.examine()
