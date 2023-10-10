@@ -1,8 +1,10 @@
+from collections import deque
 import time
 
 import cv2
 import numpy as np
 from gym import spaces
+from mod_reward_judge import ModRewardJudge
 
 import directkeys as keys
 import grabscreenv2
@@ -46,8 +48,9 @@ KEY_TO_STR = {KEY_MOVE_FORWARD: "W",
 
 
 class MhEnv:
-    def __init__(self, judge):
-        self._elapsed_steps = 0
+    def __init__(self):
+        self.elapsed_steps = 0
+        self.episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
 
         self.operator = MhrGameOperator()
 
@@ -61,7 +64,7 @@ class MhEnv:
         #                 KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK, KEY_GUARD, KEY_WIREBUG_RETICLE, KEY_USE_ITEM)
         # self.enabled_buttons = (KEY_MOVE_FORWARD, KEY_MOVE_LEFT, KEY_MOVE_RIGHT,
         #                         KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
-        self.button_states = np.full(len(self.buttons), False, dtype=np.bool8)
+        self.button_states = np.full(len(self.buttons), False, dtype=bool)
 
         self.dqn_actions = [{},
                             {KEY_MOVE_FORWARD},
@@ -113,23 +116,23 @@ class MhEnv:
         #     dtype=np.float32
         # )
 
-        self.screenshot_for_render = None
+        self.last_obs = None
         self.is_rendering = False
 
-        self.judge = judge
+        self.judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
 
         self.kd = DisplayText()
 
     def get_action_number(self):
         return self.action_num
 
-    def step_without_reward(self, action):
-        assert self._elapsed_steps is not None, "Cannot call env.step() before calling reset()"
+    def step(self, action):
+        assert self.elapsed_steps is not None, "Cannot call env.step() before calling reset()"
 
         # self.perform_action(action)
         self.dqn_perform_action(action)
 
-        self._elapsed_steps += 1
+        self.elapsed_steps += 1
 
         if (self.need_wait_between_steps):
             cur_time = time.time()
@@ -139,36 +142,66 @@ class MhEnv:
                 time.sleep(time_to_sleep)
 
         self.judge.load_file_to_buffer()
-
+        done = self.judge.is_quest_end
         self.last_step_time = time.time()
-        self.screenshot_for_render = self.screenshot()
-        observation = (time.time(), self.screenshot_for_render)
+        self.last_obs = self.format_img_for_training(self.screenshot())
+        self.episode_examples.append({
+            "end_time": self.last_step_time,
+            "action": action,
+            "next_obs": self.last_obs,
+            "done": done,
+        })
 
-        return observation, 0, self.judge.is_quest_end, 0
+        return self.last_obs, done
 
-    def step(self, action):
-        observation, _, done, _ = self.step_without_reward(action)
-        damage = self.evaluate_reward(observation)
-
-        return observation, damage, done, 0
-
-    def evaluate_reward(self, observation):
-        damage = self.judge.evaluate(observation)
-        return damage
-
-    def reset(self):
-        self._elapsed_steps = 0
-        self.last_step_time = time.time()
-
+    def reset_debug_ui(self):
         self.kd.close()
         self.release_all_buttons()
         if self.is_rendering:
             self.is_rendering = False
             cv2.destroyWindow('window1')
 
-        self.screenshot_for_render = self.screenshot()
-        observation = (time.time(), self.screenshot_for_render)
-        return observation
+    def reset(self):
+        self.elapsed_steps = 0
+        self.last_step_time = time.time()
+        self.last_obs = self.format_img_for_training(self.screenshot())
+        self.reset_debug_ui()
+
+        self.episode_examples.clear()
+        self.episode_examples.append({
+            "end_time": self.last_step_time,
+            "action": None,
+            "next_obs": self.last_obs,
+            "done": False,
+        })
+        return self.last_obs
+
+    def get_examples(self):
+        assert len(self.episode_examples) > 0, "Cannot call env.get_examples() before calling reset()"
+        last_time = time.time()
+        result = []
+        episode_reward = 0.
+        start_time = None
+        obs = None
+        for idx, example in enumerate(self.episode_examples):
+            end_time = example["end_time"]
+            action = example["action"]
+            next_obs = example["next_obs"]
+            done = example["done"]
+            # The first example only provides the initial obs.
+            if idx > 0:
+                reward = self.judge.evaluate(start_time, end_time)
+                episode_reward += reward
+                if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
+                    print("Step {}, reward {:.4f}".format(idx, reward))
+                result.append((obs, action, next_obs, reward, done))
+
+            start_time = end_time
+            obs = next_obs
+
+        print('evaluating reward took {:.3f} seconds, episode_reward {:.3f}, avg_reward {:.3f}'.format(
+            time.time()-last_time, episode_reward, episode_reward / (len(self.episode_examples) - 1)))
+        return result
 
     def start_quest(self):
         self.judge.reset_is_quest_end()
@@ -176,12 +209,11 @@ class MhEnv:
         # self.operator.setup_tetranadon()
 
     def render(self):
-        if hasattr(self.screenshot_for_render, "__len__") and len(self.screenshot_for_render) > 0:
-            img = cv2.cvtColor(self.screenshot_for_render, cv2.COLOR_BGR2GRAY)
-            img = cv2.resize(img, (self.img_width, self.img_height))
-            img = cv2.resize(img, (self.img_width*5, self.img_height*5))
-            cv2.imshow('window1', img)
-            self.is_rendering = True
+        assert self.last_obs is not None, "Cannot call env.render() before calling reset()"
+        img = cv2.resize(self.last_obs[-1], (self.img_width, self.img_height))
+        img = cv2.resize(img, (self.img_width*5, self.img_height*5))
+        cv2.imshow('window1', img)
+        self.is_rendering = True
 
     def close(self):
         pass
@@ -213,6 +245,7 @@ class MhEnv:
 
     def screenshot(self):
         need_grab_screen = True
+        img = None
         while need_grab_screen:
             try:
                 img = grabscreenv2.grab_screen("Monster Hunter Rise")
@@ -220,10 +253,11 @@ class MhEnv:
             except RuntimeError as err:
                 print(err)
                 time.sleep(1)
+        assert img is not None
         img = img[self.window_size[0]:self.window_size[1],
                   self.window_size[2]:self.window_size[3]]
 
-        fi = self._elapsed_steps if self.save_img else -1
+        fi = self.elapsed_steps if self.save_img else -1
         if fi >= 0:
             fn = r'c:\temp\test\test_{}.png'.format(fi)
             cv2.imwrite(fn, img)
@@ -233,7 +267,7 @@ class MhEnv:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (self.img_width, self.img_height))
         img = img / np.float32(255.)
-        return img
+        return np.expand_dims(img, 0)
 
     def release_all_buttons(self):
         msg = ''
@@ -258,7 +292,7 @@ def main():
     while True:
         img, damage = env.screenshot()
         cv2.imshow('window1', img)
-        env._elapsed_steps += 1
+        env.elapsed_steps += 1
         if cv2.waitKey(5) & 0xFF == ord('q'):
             break
     cv2.waitKey()  # 视频结束后，按任意键退出

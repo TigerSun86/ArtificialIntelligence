@@ -157,8 +157,7 @@ def main():
     args.outdir = prepare_output_dir.prepare_output_dir(args, args.outdir)
     print("Output files are saved in {}".format(args.outdir))
 
-    judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
-    env = MhEnv(judge)
+    env = MhEnv()
 
     n_actions = env.get_action_number()
     q_func = atari_cnn.CopySmallAtariCNN(n_actions, n_input_channels=1)

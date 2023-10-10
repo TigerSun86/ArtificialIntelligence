@@ -16,22 +16,24 @@ class ModRewardJudge:
     def reset_is_quest_end(self):
         self.is_quest_end = False
 
-    def evaluate(self, state):
+    def evaluate(self, start_time, end_time):
         self.load_file_to_buffer()
-
-        (state_timestamp, _) = state
+        # print(f'start_time {start_time} end_time {end_time}')
         reward = 0
         while self.buffer:
             (log_timestamp, target, damage) = self.buffer[0]
-            if state_timestamp >= log_timestamp:
+            # print(f'log_timestamp {log_timestamp} target {target} damage {damage}')
+            if log_timestamp > end_time:
+                # The log happened after the state, so it belongs to the next state.
+                break
+            if log_timestamp > start_time:
                 if target == "player":
                     reward -= damage
                 else:
                     reward += damage
-                self.buffer.popleft()
-            else:
-                # The log happened after the state, so it belongs to the next state.
-                break
+            self.buffer.popleft()
+
+        # print(f'reward {reward}')
         reward /= 10.
         reward += common_definitions.STEP_BASE_REWARD
         return reward
@@ -77,13 +79,15 @@ def monitor_and_process(file_path, events):
 
     while True:
         try:
-            for event_timestamp, event in events:
+            i = 0
+            for start_time, end_time in events:
                 last_time = time.time()
-                reward = judge.evaluate((event_timestamp, 0))
+                reward = judge.evaluate(start_time, end_time)
                 print(
-                    f"Event: {event} Event Timestamp: {datetime.fromtimestamp(event_timestamp).strftime('%Y-%m-%d %H:%M:%S')} Reward: {reward}")
+                    f"Event: {i} Event Timestamp: {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')} Reward: {reward}")
                 print('step took {:.3f} seconds'.format(
                     time.time()-last_time))
+                i += 1
         except KeyboardInterrupt:
             break
         # except Exception as e:
@@ -97,12 +101,12 @@ def main():
     # Simulated list of events with timestamps
     current_time = int(time.time())
     events_list = [
-        (current_time - 30, "Event A"),
-        (current_time, "Event B"),
-        (current_time + 1000, "Event C")
+        (current_time - 30, current_time - 10),
+        (current_time - 10, current_time),
+        (current_time, current_time + 1000)
     ]
 
-    file_path = r"D:\Games\SteamLibrary\steamapps\common\MonsterHunterRise\reframework\data\shared_memory.txt"
+    file_path = common_definitions.GAME_LOG_PATH
     monitor_and_process(file_path, events_list)
 
 

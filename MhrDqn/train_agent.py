@@ -9,7 +9,7 @@ import common_definitions
 import dqn
 import mh_env
 
-from torch.utils.tensorboard import SummaryWriter
+from torch.utils.tensorboard.writer import SummaryWriter
 
 
 def save_agent_replay_buffer(agent, t, outdir, suffix="", logger=None):
@@ -72,7 +72,6 @@ def train_agent(
 
     obs = env.reset()
     env.render()
-    img = env.format_img_for_training(obs[1])
 
     env.operator.wait_before_start()
     env.start_quest()
@@ -84,14 +83,11 @@ def train_agent(
             episode_steps = 0
             episode_examples.clear()
             q_sum = 0.
+            obs = env.reset()
 
             while True:
-                # a_t
-                action, q_value = agent.act(np.expand_dims(img, 0))
-                # o_{t+1}, r_{t+1}
-                next_obs, r, done, info = env.step_without_reward(action)
-                episode_examples.append((obs, action, next_obs, done))
-                # agent.remember(obs, action, next_obs, r, done)
+                action, q_value = agent.act(obs)
+                next_obs, done = env.step(action)
                 env.render()
 
                 t += 1
@@ -100,7 +96,6 @@ def train_agent(
                 episode_len += 1
                 reset = episode_len == max_episode_len
                 obs = next_obs
-                img = env.format_img_for_training(obs[1])
 
                 q_sum += q_value if not np.isnan(q_value) else 0
 
@@ -121,23 +116,8 @@ def train_agent(
             if not done:
                 env.operator.pause_game()
 
-            last_time = time.time()
-            episode_r = 0.
-            for idx, example in enumerate(episode_examples):
-                obs, action, next_obs, done = example
-                (_, img) = obs
-                (_, next_img) = next_obs
-                state = np.expand_dims(env.format_img_for_training(img), 0)
-                next_state = np.expand_dims(env.format_img_for_training(next_img), 0)
-                reward = env.evaluate_reward(next_obs)
-                episode_r += reward
-                if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
-                    print("Step {}, reward {:.4f}".format(idx, reward))
-
-                agent.remember(state, action, next_state, r, done)
-
-            print('evaluating reward took {:.3f} seconds, episode_r {:.3f}, reward_avg {:.3f}'.format(
-                time.time()-last_time, episode_r, episode_r / episode_steps))
+            for obs, action, next_obs, reward, done in env.get_examples():
+                agent.remember(obs, action, next_obs, reward, done)
 
             last_time = time.time()
             loop_count = episode_len
@@ -171,8 +151,6 @@ def train_agent(
             # Start a new episode
             episode_r = 0
             episode_len = 0
-            obs = env.reset()
-            img = env.format_img_for_training(obs[1])
             if checkpoint_freq and t % checkpoint_freq == 0:
                 save_agent(agent, t, outdir, logger, suffix="_checkpoint")
     except (Exception, KeyboardInterrupt):
