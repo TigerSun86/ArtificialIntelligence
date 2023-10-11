@@ -118,6 +118,7 @@ class MhEnv:
 
         self.last_obs = None
         self.is_rendering = False
+        self.synced_timestamp = None
 
         self.judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
 
@@ -128,6 +129,7 @@ class MhEnv:
 
     def step(self, action):
         assert self.elapsed_steps is not None, "Cannot call env.step() before calling reset()"
+        assert self.synced_timestamp is not None, "Cannot call env.step() before sync time with game"
 
         # self.perform_action(action)
         self.dqn_perform_action(action)
@@ -146,7 +148,7 @@ class MhEnv:
         self.last_step_time = time.time()
         self.last_obs = self.format_img_for_training(self.screenshot())
         self.episode_examples.append({
-            "end_time": self.last_step_time,
+            "end_time": self.last_step_time - self.synced_timestamp,
             "action": action,
             "next_obs": self.last_obs,
             "done": done,
@@ -162,6 +164,8 @@ class MhEnv:
             cv2.destroyWindow('window1')
 
     def reset(self):
+        assert self.synced_timestamp is not None, "Cannot call env.reset() before sync time with game"
+
         self.elapsed_steps = 0
         self.last_step_time = time.time()
         self.last_obs = self.format_img_for_training(self.screenshot())
@@ -169,7 +173,7 @@ class MhEnv:
 
         self.episode_examples.clear()
         self.episode_examples.append({
-            "end_time": self.last_step_time,
+            "end_time": self.last_step_time - self.synced_timestamp,
             "action": None,
             "next_obs": self.last_obs,
             "done": False,
@@ -205,12 +209,22 @@ class MhEnv:
 
     def start_quest(self):
         self.judge.reset_is_quest_end()
-        self.operator.setup_kuluyaku()
-        # self.operator.setup_tetranadon()
+
+        self.operator.start_quest_kuluyaku()
+
+        self.operator.sync_time_with_game()
+        self.synced_timestamp = time.time()
+        print(f'Synced time with game at {self.synced_timestamp}')
+
+        time.sleep(5)
+        self.operator.go_to_infernal_springs_center()
 
     def render(self):
-        assert self.last_obs is not None, "Cannot call env.render() before calling reset()"
-        img = cv2.resize(self.last_obs[-1], (self.img_width, self.img_height))
+        if self.last_obs is None:
+            img = self.format_img_for_training(self.screenshot())[-1]
+        else:
+            img = self.last_obs[-1]
+        img = cv2.resize(img, (self.img_width, self.img_height))
         img = cv2.resize(img, (self.img_width*5, self.img_height*5))
         cv2.imshow('window1', img)
         self.is_rendering = True

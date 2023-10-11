@@ -54,7 +54,7 @@ def train_agent(
 ):
     logger = logger or logging.getLogger(__name__)
 
-    episode_r = 0
+    episode_reward = 0
     episode_idx = 0
 
     t = step_offset
@@ -70,7 +70,7 @@ def train_agent(
     # writer.add_graph(agent.model, in_obs)
     log_step = 0
 
-    obs = env.reset()
+    env.reset_debug_ui()
     env.render()
 
     env.operator.wait_before_start()
@@ -118,6 +118,7 @@ def train_agent(
 
             for obs, action, next_obs, reward, done in env.get_examples():
                 agent.remember(obs, action, next_obs, reward, done)
+                episode_reward += reward
 
             last_time = time.time()
             loop_count = episode_len
@@ -131,8 +132,8 @@ def train_agent(
             logger.info("training took %f seconds, statistics:%s", time.time()-last_time, stats)
             stats_dict = dict(stats)
             if writer:
-                writer.add_scalar('average_step_reward', episode_r / episode_len, log_step)
-                writer.add_scalar('episode_reward', episode_r, log_step)
+                writer.add_scalar('average_step_reward', episode_reward / episode_len, log_step)
+                writer.add_scalar('episode_reward', episode_reward, log_step)
                 writer.add_scalar('average_q', stats_dict['average_q'], log_step)
                 writer.add_scalar('average_loss', stats_dict['average_loss'], log_step)
                 writer.add_scalar('episode_len', episode_len, log_step)
@@ -149,7 +150,7 @@ def train_agent(
                 env.start_quest()
 
             # Start a new episode
-            episode_r = 0
+            episode_reward = 0
             episode_len = 0
             if checkpoint_freq and t % checkpoint_freq == 0:
                 save_agent(agent, t, outdir, logger, suffix="_checkpoint")

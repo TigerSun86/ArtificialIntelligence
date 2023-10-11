@@ -160,6 +160,19 @@ class MhrGameOperator:
         keys.ReleaseKey(KEY_DODGE)
         self.wait_for_key_press()
 
+    def sync_time_with_game(self):
+        keys.PressKey(keys.KEY_F3)
+        self.wait_for_key_press()
+        keys.ReleaseKey(keys.KEY_F3)
+        self.wait_for_key_press()
+
+        # The action of "Good Work".
+        keys.PressKey(keys.KEY_8)
+        self.wait_for_key_press()
+        keys.ReleaseKey(keys.KEY_8)
+
+        # Don't wait for key release because we need to get the current time immediately after this.
+
     def open_village_quest_menu(self):
         self.open_map()
         self.wait_for_menu_loading()
@@ -187,7 +200,7 @@ class MhrGameOperator:
         self.examine()
         self.wait_for_menu_loading()
 
-    def setup_wroggi(self):
+    def start_quest_wroggi(self):
         self.open_village_quest_menu()
 
         self.examine()
@@ -206,9 +219,8 @@ class MhrGameOperator:
         self.launch_quest()
 
         self.wait_for_game_loading()
-        self.go_to_arena_center()
 
-    def setup_tetranadon(self):
+    def start_quest_tetranadon(self):
         self.open_master_rank_quest_menu()
 
         self.examine()
@@ -227,9 +239,8 @@ class MhrGameOperator:
         self.launch_quest()
 
         self.wait_for_game_loading()
-        self.go_to_arena_center()
 
-    def setup_kuluyaku(self):
+    def start_quest_kuluyaku(self):
         self.open_master_rank_quest_menu()
 
         self.examine()
@@ -249,7 +260,6 @@ class MhrGameOperator:
         self.launch_quest()
 
         self.wait_for_game_loading()
-        self.go_to_infernal_springs_center()
 
     def exit_quest(self):
         time.sleep(15)

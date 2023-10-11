@@ -21,12 +21,12 @@ class ModRewardJudge:
         # print(f'start_time {start_time} end_time {end_time}')
         reward = 0
         while self.buffer:
-            (log_timestamp, target, damage) = self.buffer[0]
-            # print(f'log_timestamp {log_timestamp} target {target} damage {damage}')
-            if log_timestamp > end_time:
+            (log_elapsed_time, target, damage) = self.buffer[0]
+            # print(f'log_elapsed_time {log_elapsed_time} target {target} damage {damage}')
+            if log_elapsed_time > end_time:
                 # The log happened after the state, so it belongs to the next state.
                 break
-            if log_timestamp > start_time:
+            if log_elapsed_time > start_time:
                 if target == "player":
                     reward -= damage
                 else:
@@ -46,7 +46,7 @@ class ModRewardJudge:
 
             # If this is a new file, reset counters.
             first_line = line.strip().split()
-            assert first_line[1] == "file_create_time", "The first line of log file is expected to be a timestamp and a string 'file_create_time'"
+            assert first_line[1] == "time_synced", "The first line of log file is expected to be a timestamp and a string 'time_synced'"
             game_log_create_time = int(first_line[0])
             if self.game_log_create_time != game_log_create_time:
                 self.game_log_create_time = game_log_create_time
@@ -59,14 +59,14 @@ class ModRewardJudge:
                 self.last_position = file.tell()
                 for line in lines:
                     log = line.strip().split()
-                    log_timestamp = log[0]
+                    log_elapsed_time = log[0]
                     text = log[1]
                     if text == "end":
                         self.is_quest_end = True
                         break
                     elif len(log) == 3:
                         damage = log[2]
-                        self.buffer.append((int(log_timestamp), text, int(damage)))
+                        self.buffer.append((float(log_elapsed_time), text, int(damage)))
 
 # Test
 
@@ -77,33 +77,23 @@ def monitor_and_process(file_path, events):
 
     judge = ModRewardJudge(file_path)
 
-    while True:
-        try:
-            i = 0
-            for start_time, end_time in events:
-                last_time = time.time()
-                reward = judge.evaluate(start_time, end_time)
-                print(
-                    f"Event: {i} Event Timestamp: {datetime.fromtimestamp(start_time).strftime('%Y-%m-%d %H:%M:%S')} Reward: {reward}")
-                print('step took {:.3f} seconds'.format(
-                    time.time()-last_time))
-                i += 1
-        except KeyboardInterrupt:
-            break
-        # except Exception as e:
-        #     print("Error:", e)
-
-        # Wait for a short interval before checking again
-        time.sleep(1)
+    i = 0
+    for start_time, end_time in events:
+        last_time = time.time()
+        reward = judge.evaluate(start_time, end_time)
+        print(
+            f"Event: {i} start_time: {start_time} end_time: {end_time} Reward: {reward}")
+        print('step took {:.3f} seconds'.format(
+            time.time()-last_time))
+        i += 1
 
 
 def main():
     # Simulated list of events with timestamps
-    current_time = int(time.time())
     events_list = [
-        (current_time - 30, current_time - 10),
-        (current_time - 10, current_time),
-        (current_time, current_time + 1000)
+        (20.1, 30.1),
+        (30.1, 40.1),
+        (40.1, 70.1),
     ]
 
     file_path = common_definitions.GAME_LOG_PATH
