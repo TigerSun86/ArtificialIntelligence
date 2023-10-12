@@ -63,11 +63,6 @@ def train_agent(
     episode_len = 0
     episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
 
-    timestr = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-    writer = SummaryWriter(f'./logs/mhr_{timestr}')
-    # print(np.asarray(np.expand_dims(obs, 0)).shape)
-    # in_obs = torch.from_numpy(agent.phi(np.expand_dims(obs, 0))).float().to(agent.device)
-    # writer.add_graph(agent.model, in_obs)
     log_step = 0
 
     env.reset_debug_ui()
@@ -75,6 +70,8 @@ def train_agent(
 
     env.operator.wait_before_start()
     env.start_quest()
+    timestr = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+    writer = SummaryWriter(f'./logs/mhr_{timestr}')
     try:
         log_model_weights(writer, agent, log_step)
         while t < steps:
@@ -91,7 +88,6 @@ def train_agent(
                 env.render()
 
                 t += 1
-                log_step += 1
                 episode_steps += 1
                 episode_len += 1
                 reset = episode_len == max_episode_len
@@ -121,6 +117,7 @@ def train_agent(
                 episode_reward += reward
 
             last_time = time.time()
+            log_step = t - episode_len
             loop_count = episode_len
             for i in range(loop_count):
                 agent.train()
