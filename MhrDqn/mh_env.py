@@ -119,6 +119,8 @@ class MhEnv:
         self.last_obs = None
         self.is_rendering = False
         self.synced_timestamp = None
+        self.k = 4
+        self.frames = deque([], maxlen=self.k)
 
         self.judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
 
@@ -146,7 +148,10 @@ class MhEnv:
         self.judge.load_file_to_buffer()
         done = self.judge.is_quest_end
         self.last_step_time = time.time()
-        self.last_obs = self.format_img_for_training(self.screenshot())
+        obs = self.format_img_for_training(self.screenshot())
+        self.frames.append(obs)
+        assert len(self.frames) == self.k
+        self.last_obs = np.array(self.frames)
         self.episode_examples.append({
             "end_time": self.last_step_time - self.synced_timestamp,
             "action": action,
@@ -168,7 +173,11 @@ class MhEnv:
 
         self.elapsed_steps = 0
         self.last_step_time = time.time()
-        self.last_obs = self.format_img_for_training(self.screenshot())
+        obs = self.format_img_for_training(self.screenshot())
+        for _ in range(self.k):
+            self.frames.append(obs)
+        assert len(self.frames) == self.k
+        self.last_obs = np.array(self.frames)
         self.reset_debug_ui()
 
         self.episode_examples.clear()
@@ -178,6 +187,7 @@ class MhEnv:
             "next_obs": self.last_obs,
             "done": False,
         })
+
         return self.last_obs
 
     def get_examples(self):
@@ -281,7 +291,7 @@ class MhEnv:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.resize(img, (self.img_width, self.img_height))
         img = img / np.float32(255.)
-        return np.expand_dims(img, 0)
+        return img
 
     def release_all_buttons(self):
         msg = ''
