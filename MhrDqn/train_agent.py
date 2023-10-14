@@ -62,7 +62,7 @@ def train_agent(
     eval_stats_history = []  # List of evaluation episode stats dict
     episode_len = 0
     episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
-
+    quest_step = 0
     log_step = 0
 
     env.reset_debug_ui()
@@ -90,13 +90,14 @@ def train_agent(
                 t += 1
                 episode_steps += 1
                 episode_len += 1
+                quest_step += 1
                 reset = episode_len == max_episode_len
                 obs = next_obs
 
                 q_sum += q_value if not np.isnan(q_value) else 0
 
-                print('step {}, {} took {:.3f} seconds, q: {:.2E}, a: {}'.format(
-                    episode_steps, t, time.time()-last_time,  q_value, action))
+                print('step {}, {} took {:.3f} seconds, q: {:.2E}, a: {} ({})'.format(
+                    episode_steps, t, time.time()-last_time,  q_value, action, env.dqn_action_to_str(action)))
                 total_time += time.time()-last_time
                 last_time = time.time()
 
@@ -143,6 +144,8 @@ def train_agent(
                 env.operator.resume_game()
 
             if done:
+                writer.add_scalar('quest_step', quest_step, log_step)
+                quest_step = 0
                 env.operator.exit_quest()
                 env.start_quest()
 

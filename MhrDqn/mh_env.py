@@ -58,8 +58,10 @@ class MhEnv:
 
         # self.buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
         # self.enabled_buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
-        self.buttons = (KEY_MOVE_FORWARD, KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
-        self.enabled_buttons = (KEY_MOVE_FORWARD, KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK)
+        self.buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT,
+                        KEY_MOVE_RIGHT, KEY_DODGE, KEY_NORMAL_ATTACK)
+        self.enabled_buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT,
+                                KEY_MOVE_RIGHT, KEY_DODGE, KEY_NORMAL_ATTACK)
         # self.buttons = (KEY_MOVE_FORWARD, KEY_MOVE_BACKWARDS, KEY_MOVE_LEFT, KEY_MOVE_RIGHT, KEY_DASH,
         #                 KEY_DODGE, KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK, KEY_GUARD, KEY_WIREBUG_RETICLE, KEY_USE_ITEM)
         # self.enabled_buttons = (KEY_MOVE_FORWARD, KEY_MOVE_LEFT, KEY_MOVE_RIGHT,
@@ -68,10 +70,17 @@ class MhEnv:
 
         self.dqn_actions = [{},
                             {KEY_MOVE_FORWARD},
-                            {KEY_NORMAL_ATTACK},
-                            {KEY_MOVE_FORWARD, KEY_DODGE},
+                            {KEY_MOVE_BACKWARDS},
+                            {KEY_MOVE_LEFT},
+                            {KEY_MOVE_RIGHT},
                             {KEY_MOVE_FORWARD, KEY_NORMAL_ATTACK},
-                            {KEY_NORMAL_ATTACK, KEY_SPECIAL_ATTACK},
+                            {KEY_MOVE_BACKWARDS, KEY_NORMAL_ATTACK},
+                            {KEY_MOVE_LEFT, KEY_NORMAL_ATTACK},
+                            {KEY_MOVE_RIGHT, KEY_NORMAL_ATTACK},
+                            {KEY_MOVE_FORWARD, KEY_DODGE},
+                            {KEY_MOVE_BACKWARDS, KEY_DODGE},
+                            {KEY_MOVE_LEFT, KEY_DODGE},
+                            {KEY_MOVE_RIGHT, KEY_DODGE},
                             ]
 
         self.need_wait_between_steps = True
@@ -241,6 +250,13 @@ class MhEnv:
 
     def close(self):
         pass
+
+    def dqn_action_to_str(self, action):
+        button_set = self.dqn_actions[action]
+        msg = ''
+        for button in button_set:
+            msg += KEY_TO_STR[button] + ','
+        return msg
 
     def dqn_perform_action(self, action):
         button_set = self.dqn_actions[action]
