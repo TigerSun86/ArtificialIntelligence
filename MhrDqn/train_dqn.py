@@ -160,7 +160,7 @@ def main():
     env = MhEnv()
 
     n_actions = env.get_action_number()
-    q_func = atari_cnn.CopySmallAtariCNN(n_actions, n_input_channels=4)
+    q_func = atari_cnn.CopyLargeAtariCNN(n_actions, n_input_channels=4)
 
     opt = torch.optim.Adam(q_func.parameters(), lr=2.5e-4)
 

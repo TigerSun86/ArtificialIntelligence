@@ -79,6 +79,38 @@ class SmallAtariCNN(nn.Module):
         h_flat = h.view(h.size(0), -1)
         return self.activation(self.output(h_flat))
 
+class CopyLargeAtariCNN(nn.Module):
+    def __init__(
+        self, n_actions, n_input_channels=1, n_output_channels=512, activation=F.relu, bias=0.1
+    ):
+        self.n_input_channels = n_input_channels
+        self.activation = activation
+        self.n_output_channels = n_output_channels
+        super().__init__()
+
+        self.conv1 = nn.Conv2d(n_input_channels, 32, 8, stride=4)
+        self.conv2 = nn.Conv2d(32, 64, 4, stride=2)
+        self.conv3 = nn.Conv2d(64, 64, 3, stride=1)
+        self.linear1 = nn.Linear(23104, n_output_channels)
+        self.linear2 = nn.Linear(n_output_channels, n_actions)
+        chainer_default.init_chainer_default(self.conv1)
+        chainer_default.init_chainer_default(self.conv2)
+        chainer_default.init_chainer_default(self.conv3)
+        chainer_default.init_chainer_default(self.linear1)
+        chainer_default.init_chainer_default(self.linear2)
+        constant_bias_initializer(bias=bias)(self.conv1)
+        constant_bias_initializer(bias=bias)(self.conv2)
+        constant_bias_initializer(bias=bias)(self.conv3)
+        constant_bias_initializer(bias=bias)(self.linear1)
+
+    def forward(self, state):
+        h = state
+        h = self.activation(self.conv1(h))
+        h = self.activation(self.conv2(h))
+        h = self.activation(self.conv3(h))
+        h = h.view(h.size(0), -1)
+        h = self.activation(self.linear1(h))
+        return self.linear2(h)
 
 class CopySmallAtariCNN(nn.Module):
     def __init__(
