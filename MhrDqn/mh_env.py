@@ -89,8 +89,8 @@ class MhEnv:
         x2 = x1 + common_definitions.GAME_SCREEN_RESOLUTION[1]
         self.window_size = [y1, y2, x1, x2]  # y1, y2, x1, x2
         # self.window_size = (70, 400, 100, 540)  # y1, y2, x1, x2
-        self.img_width = 84
-        self.img_height = 84
+        self.img_width = 180
+        self.img_height = 180
         self.img_min = 0.
         self.img_max = 1.
 
@@ -227,15 +227,15 @@ class MhEnv:
         print(f'Synced time with game at {self.synced_timestamp}')
 
         time.sleep(5)
-        self.operator.go_to_infernal_springs_center()
+        self.operator.go_to_arena_center()
 
     def render(self):
         if self.last_obs is None:
-            img = self.format_img_for_training(self.screenshot())[-1]
+            img = self.format_img_for_training(self.screenshot())
         else:
             img = self.last_obs[-1]
         img = cv2.resize(img, (self.img_width, self.img_height))
-        img = cv2.resize(img, (self.img_width*5, self.img_height*5))
+        img = cv2.resize(img, (self.img_width*2, self.img_height*2))
         cv2.imshow('window1', img)
         self.is_rendering = True
 

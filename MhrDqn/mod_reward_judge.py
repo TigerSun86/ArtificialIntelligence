@@ -34,7 +34,7 @@ class ModRewardJudge:
             self.buffer.popleft()
 
         # print(f'reward {reward}')
-        reward /= 10.
+        reward /= 1000.
         reward += common_definitions.STEP_BASE_REWARD
         return reward
 

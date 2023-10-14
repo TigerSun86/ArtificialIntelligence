@@ -132,6 +132,10 @@ class MhrGameOperator:
         self.wirebug_forward()
         time.sleep(2)
         self.lock_on_target()
+        time.sleep(2)
+        self.move_forward()
+        self.wirebug_forward()
+        time.sleep(2)
 
     def go_to_infernal_springs_center(self):
         self.wirebug_forward()

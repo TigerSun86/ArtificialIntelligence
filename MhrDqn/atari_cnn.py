@@ -91,7 +91,7 @@ class CopySmallAtariCNN(nn.Module):
 
         self.conv1 = nn.Conv2d(n_input_channels, 16, 8, stride=4)
         self.conv2 = nn.Conv2d(16, 32, 4, stride=2)
-        self.linear1 = nn.Linear(2592, n_output_channels)
+        self.linear1 = nn.Linear(14112, n_output_channels)
         self.linear2 = nn.Linear(n_output_channels, n_actions)
         chainer_default.init_chainer_default(self.conv1)
         chainer_default.init_chainer_default(self.conv2)
