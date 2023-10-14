@@ -366,3 +366,4 @@ venv/
 sweep/
 
 out/*
+logs/*
