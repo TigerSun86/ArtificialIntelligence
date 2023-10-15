@@ -208,18 +208,12 @@ def lock_vision():
 
 
 if __name__ == '__main__':
-    time.sleep(5)
-    time1 = time.time()
-    while (True):
-        if abs(time.time()-time1) > 5:
-            break
-        else:
-            PressKey(KEY_W)
-            time.sleep(0.1)
-            ReleaseKey(KEY_W)
-            time.sleep(0.2)
-
-    PressKey(KEY_W)
-    time.sleep(0.4)
-    ReleaseKey(KEY_W)
-    time.sleep(1)
+    for i in range(3, 0, -1):
+        print(i)
+        time.sleep(1)
+    keys = [KEY_W, KEY_D, KEY_A, KEY_SPACE, KEY_Y]
+    for key in keys:
+        PressKey(key)
+        time.sleep(0.02)
+        ReleaseKey(key)
+        time.sleep(1)

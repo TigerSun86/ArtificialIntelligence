@@ -83,7 +83,7 @@ def train_agent(
 
             while True:
                 action, q_value = agent.act(obs)
-                next_obs, done = env.step(action)
+                next_obs, done, time_slept = env.step(action)
                 env.render()
 
                 t += 1
@@ -95,8 +95,8 @@ def train_agent(
 
                 q_sum += q_value if not np.isnan(q_value) else 0
 
-                print('step {}, {} took {:.3f} seconds, q: {:.2E}, a: {} ({})'.format(
-                    episode_steps, t, time.time()-last_time,  q_value, action, env.dqn_action_to_str(action)))
+                print('step {}, {} took {:.3f} s, slept {:.3f} s, q: {:.2E}, a: {} ({})'.format(episode_steps,
+                      t, time.time()-last_time, time_slept, q_value, action, env.dqn_action_to_str(action)))
                 total_time += time.time()-last_time
                 last_time = time.time()
 

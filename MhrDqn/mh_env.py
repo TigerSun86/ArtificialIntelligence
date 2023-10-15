@@ -11,7 +11,7 @@ import directkeys as keys
 import grabscreenv2
 from display_text import DisplayText
 import common_definitions
-from mhr_game_operator import MhrGameOperator
+import mhr_game_operator
 
 KEY_MOVE_FORWARD = keys.KEY_W
 KEY_MOVE_BACKWARDS = keys.KEY_S
@@ -53,7 +53,7 @@ class MhEnv:
         self.elapsed_steps = 0
         self.episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
 
-        self.operator = MhrGameOperator()
+        self.operator = mhr_game_operator.MhrGameOperator()
 
         self.save_img = False
 
@@ -84,7 +84,6 @@ class MhEnv:
                             {KEY_MOVE_RIGHT, KEY_DODGE},
                             ]
 
-        self.need_wait_between_steps = True
         self.time_between_steps = 0.2
         self.last_step_time = time.time()
 
@@ -152,12 +151,11 @@ class MhEnv:
 
         self.elapsed_steps += 1
 
-        if (self.need_wait_between_steps):
-            cur_time = time.time()
-            difference = cur_time - self.last_step_time
-            time_to_sleep = self.time_between_steps - difference
-            if (time_to_sleep > 0):
-                time.sleep(time_to_sleep)
+        cur_time = time.time()
+        difference = cur_time - self.last_step_time
+        time_to_sleep = self.time_between_steps - difference
+        if (time_to_sleep > 0):
+            time.sleep(time_to_sleep)
 
         self.judge.load_file_to_buffer()
         done = self.judge.is_quest_end
@@ -173,7 +171,7 @@ class MhEnv:
             "done": done,
         })
 
-        return self.last_obs, done
+        return self.last_obs, done, time_to_sleep
 
     def reset_debug_ui(self):
         self.display_text.close()
@@ -274,7 +272,7 @@ class MhEnv:
         self.operator.resume_game()
 
     def exit_quest(self):
-        self.episode_idx += 1
+        self.episode_idx = 0
         self.quest_idx += 1
         self.operator.exit_quest()
 
@@ -300,8 +298,12 @@ class MhEnv:
 
     def dqn_perform_action(self, action):
         button_set = self.dqn_actions[action]
-        button_nums = [1 if button in button_set else 0 for button in self.buttons]
-        self.perform_action(button_nums)
+        for button in button_set:
+            keys.PressKey(button)
+
+        time.sleep(mhr_game_operator.MIN_KEY_PRESS_WAITING_SECONDS)
+        for button in button_set:
+            keys.ReleaseKey(button)
 
     def perform_action(self, action):
         msg = ''
@@ -360,7 +362,7 @@ class MhEnv:
                 # print('Released {}'.format(bstr))
             msg += "{}:{},".format(bstr, int(self.button_states[idx]))
 
-        self.display_text.display(msg)
+        # self.display_text.display(msg)
 
 
 def main():
