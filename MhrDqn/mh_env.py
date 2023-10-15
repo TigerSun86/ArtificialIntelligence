@@ -301,7 +301,7 @@ class MhEnv:
         for button in button_set:
             keys.PressKey(button)
 
-        time.sleep(mhr_game_operator.MIN_KEY_PRESS_WAITING_SECONDS)
+        time.sleep(mhr_game_operator.MIN_KEY_PRESS_INTERVAL_SECONDS)
         for button in button_set:
             keys.ReleaseKey(button)
 

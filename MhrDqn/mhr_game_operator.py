@@ -3,9 +3,9 @@ import common_definitions
 import time
 
 KEY_PRESS_INTERVAL_SECONDS = 0.1
+MIN_KEY_PRESS_INTERVAL_SECONDS = 0.02
 MOVE_INTERVAL_SECONDS = 0.2
 MENU_LOADING_SECONDS = 2
-MIN_KEY_PRESS_WAITING_SECONDS = 0.02
 
 KEY_MOVE_FORWARD = keys.KEY_W
 KEY_MOVE_BACKWARDS = keys.KEY_S
@@ -44,6 +44,9 @@ class MhrGameOperator:
 
     def wait_for_menu_loading(self):
         time.sleep(MENU_LOADING_SECONDS)
+
+    def wait_min_for_key_press(self):
+        time.sleep(MIN_KEY_PRESS_INTERVAL_SECONDS)
 
     def wait_for_key_press(self):
         time.sleep(KEY_PRESS_INTERVAL_SECONDS)
@@ -109,6 +112,12 @@ class MhrGameOperator:
         self.cursor_right()
         self.wait_for_move()
 
+    def draw_weapon(self):
+        keys.PressKey(KEY_NORMAL_ATTACK)
+        self.wait_for_key_press()
+        keys.ReleaseKey(KEY_NORMAL_ATTACK)
+        self.wait_for_key_press()
+
     def wirebug_forward(self):
         keys.PressKey(KEY_WIREBUG_RETICLE)
         self.wait_for_key_press()
@@ -137,6 +146,7 @@ class MhrGameOperator:
         self.move_forward()
         self.wirebug_forward()
         time.sleep(2)
+        self.draw_weapon()
 
     def go_to_infernal_springs_center(self):
         self.wirebug_forward()
@@ -153,6 +163,7 @@ class MhrGameOperator:
         self.move_forward()
         self.wirebug_forward()
         time.sleep(2)
+        self.draw_weapon()
 
     def launch_quest(self):
         keys.PressKey(KEY_DODGE)
@@ -280,10 +291,25 @@ class MhrGameOperator:
         self.wait_for_game_loading()
 
     def pause_game(self):
-        self.open_start_menu()
-        self.cursor_left()
-        self.cursor_up()
-        self.examine()
+        keys.PressKey(KEY_OPEN_START_MENU)
+        # Need to wait as less time as possbile, so that the time between episodes will be minimized.
+        self.wait_min_for_key_press()
+        keys.ReleaseKey(KEY_OPEN_START_MENU)
+        self.wait_min_for_key_press()
+        keys.PressKey(KEY_MOVE_LEFT)
+        self.wait_min_for_key_press()
+        keys.ReleaseKey(KEY_MOVE_LEFT)
+        self.wait_min_for_key_press()
+        keys.PressKey(KEY_MOVE_FORWARD)
+        self.wait_min_for_key_press()
+        keys.ReleaseKey(KEY_MOVE_FORWARD)
+        self.wait_min_for_key_press()
+        keys.PressKey(KEY_EXAMINE)
+        self.wait_min_for_key_press()
+        keys.ReleaseKey(KEY_EXAMINE)
+        self.wait_min_for_key_press()
 
     def resume_game(self):
-        self.open_start_menu()
+        keys.PressKey(KEY_OPEN_START_MENU)
+        self.wait_min_for_key_press()
+        keys.ReleaseKey(KEY_OPEN_START_MENU)
