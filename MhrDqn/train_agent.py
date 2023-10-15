@@ -68,8 +68,7 @@ def train_agent(
     env.reset_debug_ui()
     env.render()
 
-    env.operator.wait_before_start()
-    env.start_quest()
+    env.start_quest(wait_before_start=True)
     timestr = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
     writer = SummaryWriter(f'./logs/mhr_{timestr}')
     try:
@@ -111,7 +110,7 @@ def train_agent(
                 episode_idx, episode_steps, t, total_time, total_time / episode_steps, q_sum / episode_steps))
 
             if not done:
-                env.operator.pause_game()
+                env.pause_game()
 
             for obs, action, next_obs, reward, done in env.get_examples():
                 agent.remember(obs, action, next_obs, reward, done)
@@ -141,12 +140,12 @@ def train_agent(
                 break
 
             if not done:
-                env.operator.resume_game()
+                env.resume_game()
 
             if done:
                 writer.add_scalar('quest_step', quest_step, log_step)
                 quest_step = 0
-                env.operator.exit_quest()
+                env.exit_quest()
                 env.start_quest()
 
             # Start a new episode

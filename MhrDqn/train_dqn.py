@@ -157,7 +157,7 @@ def main():
     args.outdir = prepare_output_dir.prepare_output_dir(args, args.outdir)
     print("Output files are saved in {}".format(args.outdir))
 
-    env = MhEnv()
+    env = MhEnv(args.outdir)
 
     n_actions = env.get_action_number()
     q_func = atari_cnn.CopyLargeAtariCNN(n_actions, n_input_channels=4)

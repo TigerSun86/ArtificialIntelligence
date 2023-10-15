@@ -1,4 +1,5 @@
 from collections import deque
+import os
 import time
 
 import cv2
@@ -48,7 +49,7 @@ KEY_TO_STR = {KEY_MOVE_FORWARD: "W",
 
 
 class MhEnv:
-    def __init__(self):
+    def __init__(self, outdir):
         self.elapsed_steps = 0
         self.episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
 
@@ -130,10 +131,14 @@ class MhEnv:
         self.synced_timestamp = None
         self.k = 4
         self.frames = deque([], maxlen=self.k)
+        self.is_save_screenshot = True
+        self.outdir = outdir
+        self.quest_idx = 0
+        self.episode_idx = 0
 
         self.judge = ModRewardJudge(common_definitions.GAME_LOG_PATH)
 
-        self.kd = DisplayText()
+        self.display_text = DisplayText()
 
     def get_action_number(self):
         return self.action_num
@@ -171,7 +176,7 @@ class MhEnv:
         return self.last_obs, done
 
     def reset_debug_ui(self):
-        self.kd.close()
+        self.display_text.close()
         self.release_all_buttons()
         if self.is_rendering:
             self.is_rendering = False
@@ -218,6 +223,8 @@ class MhEnv:
                 if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
                     print("Step {}, reward {:.4f}".format(idx, reward))
                 result.append((obs, action, next_obs, reward, done))
+                if self.is_save_screenshot:
+                    self.save_screenshot(idx, obs, action, reward, done)
 
             start_time = end_time
             obs = next_obs
@@ -226,10 +233,31 @@ class MhEnv:
             time.time()-last_time, episode_reward, episode_reward / (len(self.episode_examples) - 1)))
         return result
 
-    def start_quest(self):
+    def save_screenshot(self, step_idx, obs, action, reward, done):
+        screenshot_outdir = os.path.join(self.outdir, 'quests', str(self.quest_idx), str(self.episode_idx))
+        if not os.path.exists(screenshot_outdir):
+            os.makedirs(screenshot_outdir)
+
+        for idx, img in enumerate(obs):
+            if idx == len(obs) - 1:
+                # Wrtie info in the last one of the stacked frames.
+                action_str = self.dqn_action_to_str(action)
+                action_str = f'action: {action_str}'
+                reward_str = f'reward: {reward}'
+                done_str = f'done: {done}'
+                self.display_text.add_text_to_img(img, [action_str, reward_str, done_str])
+
+            file_path = os.path.join(screenshot_outdir, f"{step_idx}_{idx}.png")
+            img = img * np.float32(255.)
+            cv2.imwrite(file_path, img)
+
+    def start_quest(self, wait_before_start=False):
+        if (wait_before_start):
+            self.operator.wait_before_start()
+
         self.judge.reset_is_quest_end()
 
-        self.operator.start_quest_kuluyaku()
+        self.operator.start_quest_tetranadon()
 
         self.operator.sync_time_with_game()
         self.synced_timestamp = time.time()
@@ -237,6 +265,18 @@ class MhEnv:
 
         time.sleep(5)
         self.operator.go_to_arena_center()
+
+    def pause_game(self):
+        self.episode_idx += 1
+        self.operator.pause_game()
+
+    def resume_game(self):
+        self.operator.resume_game()
+
+    def exit_quest(self):
+        self.episode_idx += 1
+        self.quest_idx += 1
+        self.operator.exit_quest()
 
     def render(self):
         if self.last_obs is None:
@@ -281,7 +321,7 @@ class MhEnv:
                 # print('Released {}'.format(bstr))
             msg += "{}:{},".format(bstr, int(self.button_states[idx]))
 
-        self.kd.display(msg)
+        self.display_text.display(msg)
 
     def screenshot(self):
         need_grab_screen = True
@@ -320,7 +360,7 @@ class MhEnv:
                 # print('Released {}'.format(bstr))
             msg += "{}:{},".format(bstr, int(self.button_states[idx]))
 
-        self.kd.display(msg)
+        self.display_text.display(msg)
 
 
 def main():
@@ -328,7 +368,7 @@ def main():
         print(i+1)
         time.sleep(1)
 
-    env = MhEnv()
+    env = MhEnv('')
     while True:
         img, damage = env.screenshot()
         cv2.imshow('window1', img)
