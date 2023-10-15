@@ -162,7 +162,7 @@ def main():
     n_actions = env.get_action_number()
     q_func = atari_cnn.CopyLargeAtariCNN(n_actions, n_input_channels=4)
 
-    opt = torch.optim.Adam(q_func.parameters(), lr=2.5e-4)
+    opt = torch.optim.Adam(q_func.parameters(), lr=1e-4)
 
     rbuf = replay_buffer.ReplayBuffer(10**6)
 
@@ -183,7 +183,7 @@ def main():
         update_interval=1,
         batch_accumulator="sum",
         phi=phi,
-        epsilon=0.1,
+        epsilon=0.01,
     )
 
     train_agent.train_agent_with_evaluation(
