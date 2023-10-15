@@ -186,9 +186,14 @@ class MhEnv:
         self.elapsed_steps = 0
         self.last_step_time = time.time()
         obs = self.format_img_for_training(self.screenshot())
-        for _ in range(self.k):
+
+        # If this is before the first step of a quest, then fill frames with the same copies of current screenshot.
+        # If this is before the first step of a episode within a quest, then skip this while loop,
+        # and just append the current screenshot, after the last screenshots of the previous episode.
+        self.frames.append(obs)
+        while len(self.frames) < self.k:
             self.frames.append(obs)
-        assert len(self.frames) == self.k
+
         self.last_obs = np.array(self.frames)
         self.reset_debug_ui()
 
@@ -274,6 +279,7 @@ class MhEnv:
     def exit_quest(self):
         self.episode_idx = 0
         self.quest_idx += 1
+        self.frames.clear()
         self.operator.exit_quest()
 
     def render(self):
