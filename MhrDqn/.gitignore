@@ -367,3 +367,5 @@ sweep/
 
 out/*
 logs/*
+baseline_logs/**/quests/*
+baseline_logs/**/*.pt
