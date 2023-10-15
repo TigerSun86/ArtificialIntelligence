@@ -265,10 +265,10 @@ class MhEnv:
         self.operator.go_to_arena_center()
 
     def pause_game(self):
-        self.episode_idx += 1
         self.operator.pause_game()
 
     def resume_game(self):
+        self.episode_idx += 1
         self.operator.resume_game()
 
     def exit_quest(self):
@@ -281,9 +281,9 @@ class MhEnv:
             img = self.format_img_for_training(self.screenshot())
         else:
             img = self.last_obs[-1]
-        img = cv2.resize(img, (self.img_width, self.img_height))
         img = cv2.resize(img, (self.img_width*2, self.img_height*2))
         cv2.imshow('window1', img)
+        cv2.waitKey(1)
         self.is_rendering = True
 
     def close(self):

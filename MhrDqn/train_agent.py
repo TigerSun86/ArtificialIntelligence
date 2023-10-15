@@ -61,7 +61,6 @@ def train_agent(
 
     eval_stats_history = []  # List of evaluation episode stats dict
     episode_len = 0
-    episode_examples = deque(maxlen=int(common_definitions.EPISODE_STEP_COUNT + 1))
     quest_step = 0
     log_step = 0
 
@@ -77,7 +76,6 @@ def train_agent(
             total_time = 0.
             last_time = time.time()
             episode_steps = 0
-            episode_examples.clear()
             q_sum = 0.
             obs = env.reset()
 
@@ -112,8 +110,8 @@ def train_agent(
             if not done:
                 env.pause_game()
 
-            for obs, action, next_obs, reward, done in env.get_examples():
-                agent.remember(obs, action, next_obs, reward, done)
+            for obs, action, next_obs, reward, done2 in env.get_examples():
+                agent.remember(obs, action, next_obs, reward, done2)
                 episode_reward += reward
 
             last_time = time.time()

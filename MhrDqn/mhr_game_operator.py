@@ -313,3 +313,4 @@ class MhrGameOperator:
         keys.PressKey(KEY_OPEN_START_MENU)
         self.wait_min_for_key_press()
         keys.ReleaseKey(KEY_OPEN_START_MENU)
+        self.wait_min_for_key_press()
