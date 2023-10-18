@@ -223,13 +223,13 @@ class MhEnv:
             done = example["done"]
             # The first example only provides the initial obs.
             if idx > 0:
-                reward = self.judge.evaluate(start_time, end_time)
+                reward, game_info = self.judge.evaluate(start_time, end_time)
                 episode_reward += reward
                 if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
                     print("Step {}, reward {:.4f}".format(idx, reward))
                 result.append((obs, action, next_obs, reward, done))
                 if self.is_save_screenshot:
-                    self.save_screenshot(idx, obs, action, reward, done)
+                    self.save_screenshot(idx, obs, action, reward, done, game_info)
 
             start_time = end_time
             obs = next_obs
@@ -238,7 +238,7 @@ class MhEnv:
             time.time()-last_time, episode_reward, episode_reward / (len(self.episode_examples) - 1)))
         return result
 
-    def save_screenshot(self, step_idx, obs, action, reward, done):
+    def save_screenshot(self, step_idx, obs, action, reward, done, game_info):
         screenshot_outdir = os.path.join(self.outdir, 'quests', str(self.quest_idx), str(self.episode_idx))
         if not os.path.exists(screenshot_outdir):
             os.makedirs(screenshot_outdir)
@@ -247,10 +247,12 @@ class MhEnv:
             if idx == len(obs) - 1:
                 # Wrtie info in the last one of the stacked frames.
                 action_str = self.dqn_action_to_str(action)
-                action_str = f'action: {action_str}'
-                reward_str = f'reward: {reward}'
-                done_str = f'done: {done}'
-                self.display_text.add_text_to_img(img, [action_str, reward_str, done_str])
+                action_str = f'action:{action_str}'
+                reward_str = f'reward:{reward}'
+                done_str = f'done:{done}'
+                (player_taken_damage, enemy_taken_damage, distance) = game_info
+                info = f'p:{player_taken_damage},e:{enemy_taken_damage},d:{int(distance)}'
+                self.display_text.add_text_to_img(img, [action_str, reward_str, done_str, info])
 
             file_path = os.path.join(screenshot_outdir, f"{step_idx}_{idx}.png")
             img = img * np.float32(255.)
