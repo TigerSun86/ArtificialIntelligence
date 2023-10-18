@@ -2,6 +2,7 @@ from collections import deque
 import datetime
 import logging
 import os
+import statistics
 import time
 import torch
 import numpy as np
@@ -22,7 +23,11 @@ def save_agent_replay_buffer(agent, t, outdir, suffix="", logger=None):
 def save_agent(agent, t, outdir, logger, suffix=""):
     dirname = os.path.join(outdir, "{}{}".format(t, suffix))
     agent.save(dirname)
-    logger.info("Saved the agent to %s", dirname)
+    log_str = f"Saved the agent to {dirname}"
+    logger.info(log_str)
+    log_path = os.path.join(outdir, 'log.txt')
+    with open(log_path, 'a') as log_file:
+        log_file.write(log_str + '\n')
 
 
 def log_model_weights(writer, agent, log_step):
@@ -63,6 +68,9 @@ def train_agent(
     episode_len = 0
     quest_step = 0
     log_step = 0
+    episode_reward_queue_max_len = 10
+    episode_reward_queue = deque(maxlen=episode_reward_queue_max_len)
+    best_model_reward = float('-inf')
 
     env.reset_debug_ui()
     env.render()
@@ -133,6 +141,15 @@ def train_agent(
                 writer.add_scalar('average_loss', stats_dict['average_loss'], log_step)
                 writer.add_scalar('episode_len', episode_len, log_step)
             episode_idx += 1
+
+            episode_reward_queue.append(episode_reward)
+            if len(episode_reward_queue) == episode_reward_queue_max_len:
+                current_model_reward = statistics.median(episode_reward_queue)
+                if best_model_reward < current_model_reward:
+                    logger.info(
+                        f"Updating best model because episode reward was increased from {best_model_reward} to {current_model_reward}")
+                    best_model_reward = current_model_reward
+                    save_agent(agent, t, outdir, logger, suffix="_best")
 
             if t == steps:
                 break
