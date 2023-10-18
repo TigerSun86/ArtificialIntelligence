@@ -164,7 +164,7 @@ def main():
 
     opt = torch.optim.Adam(q_func.parameters(), lr=5e-5)
 
-    rbuf = replay_buffer.ReplayBuffer(10**6)
+    rbuf = replay_buffer.ReplayBuffer(10**5)
 
     def phi(x):
         # Feature extractor
