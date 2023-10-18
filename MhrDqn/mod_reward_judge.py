@@ -27,6 +27,8 @@ class ModRewardJudge:
         reward = 0
         player_taken_damage = 0
         enemy_taken_damage = 0
+        player_taken_damage_count = 0
+        enemy_taken_damage_count = 0
         while self.buffer:
             (log_elapsed_time, target, damage) = self.buffer[0]
             # print(f'log_elapsed_time {log_elapsed_time} target {target} damage {damage}')
@@ -36,22 +38,29 @@ class ModRewardJudge:
             if log_elapsed_time > start_time:
                 if target == "player":
                     player_taken_damage = damage
+                    player_taken_damage_count += 1
                 elif target == "enemy":
                     enemy_taken_damage = damage
+                    enemy_taken_damage_count += 1
             self.buffer.popleft()
 
         # print(f'player_taken_damage {player_taken_damage}')
         # print(f'enemy_taken_damage {enemy_taken_damage}')
         reward = (enemy_taken_damage - player_taken_damage) / 1000.
 
+        close_distance_count = 0
+        far_distance_count = 0
         distance = self.get_distance(end_time)
         # print(f'distance {distance}')
         if distance <= 10:
             reward += common_definitions.STEP_BASE_REWARD
+            close_distance_count += 1
         elif distance > 20:
             reward -= common_definitions.STEP_BASE_REWARD
+            far_distance_count += 1
 
-        return reward, (player_taken_damage, enemy_taken_damage, distance)
+        return reward, (player_taken_damage, enemy_taken_damage, distance, player_taken_damage_count,
+                        enemy_taken_damage_count, close_distance_count, far_distance_count)
 
     def get_distance(self, action_time):
         while self.time_and_distances and action_time > self.time_and_distances[0][0]:

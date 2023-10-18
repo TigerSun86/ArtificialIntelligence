@@ -220,6 +220,10 @@ class MhEnv:
             "episode_len": 0,
             "episode_reward": 0.,
             "average_step_reward": 0.,
+            "player_taken_damage_count": 0,
+            "enemy_taken_damage_count": 0,
+            "close_distance_count": 0,
+            "far_distance_count": 0,
         }
 
         self.judge.prepare_evaluation()
@@ -235,12 +239,16 @@ class MhEnv:
                     print("Step {}, reward {:.4f}".format(idx, reward))
                 result.append((obs, action, next_obs, reward, done))
 
-                (player_taken_damage, enemy_taken_damage, distance) = game_info
+                (player_taken_damage, enemy_taken_damage, distance, player_taken_damage_count,
+                 enemy_taken_damage_count, close_distance_count, far_distance_count) = game_info
                 episode_info["player_taken_damage"] += player_taken_damage
                 episode_info["enemy_taken_damage"] += enemy_taken_damage
                 episode_info["avgerage_distance"] += distance
                 episode_info["episode_len"] += 1
-                episode_info["episode_reward"] += reward
+                episode_info["player_taken_damage_count"] += player_taken_damage_count
+                episode_info["enemy_taken_damage_count"] += enemy_taken_damage_count
+                episode_info["close_distance_count"] += close_distance_count
+                episode_info["far_distance_count"] += far_distance_count
 
                 if self.is_save_screenshot:
                     self.save_screenshot(idx, obs, action, reward, done, game_info)
@@ -266,7 +274,7 @@ class MhEnv:
                 action_str = f'action:{action_str}'
                 reward_str = f'reward:{reward}'
                 done_str = f'done:{done}'
-                (player_taken_damage, enemy_taken_damage, distance) = game_info
+                (player_taken_damage, enemy_taken_damage, distance, _, _, _, _) = game_info
                 info = f'p:{player_taken_damage},e:{enemy_taken_damage},d:{int(distance)}'
                 self.display_text.add_text_to_img(img, [action_str, reward_str, done_str, info])
 

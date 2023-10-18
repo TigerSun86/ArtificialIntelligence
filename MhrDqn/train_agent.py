@@ -142,6 +142,11 @@ def train_agent(
                 writer.add_scalar('player_taken_damage', episode_info["player_taken_damage"], log_step)
                 writer.add_scalar('enemy_taken_damage', episode_info["enemy_taken_damage"], log_step)
                 writer.add_scalar('avgerage_distance', episode_info["avgerage_distance"], log_step)
+                writer.add_scalar('player_taken_damage_count', episode_info["player_taken_damage_count"], log_step)
+                writer.add_scalar('enemy_taken_damage_count', episode_info["enemy_taken_damage_count"], log_step)
+                writer.add_scalar('close_distance_count', episode_info["close_distance_count"], log_step)
+                writer.add_scalar('far_distance_count', episode_info["far_distance_count"], log_step)
+
             episode_idx += 1
 
             episode_reward_queue.append(episode_info["episode_reward"])
