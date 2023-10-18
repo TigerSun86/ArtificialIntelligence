@@ -246,6 +246,7 @@ class MhEnv:
                 episode_info["avgerage_distance"] += distance
                 episode_info["episode_len"] += 1
                 episode_info["player_taken_damage_count"] += player_taken_damage_count
+                episode_info["episode_reward"] += reward
                 episode_info["enemy_taken_damage_count"] += enemy_taken_damage_count
                 episode_info["close_distance_count"] += close_distance_count
                 episode_info["far_distance_count"] += far_distance_count
