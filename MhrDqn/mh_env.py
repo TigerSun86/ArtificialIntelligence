@@ -84,7 +84,7 @@ class MhEnv:
                             {KEY_MOVE_RIGHT, KEY_DODGE},
                             ]
 
-        self.time_between_steps = 0.2
+        self.time_between_steps = 0.1
         self.last_step_time = time.time()
 
         # self.action_num = len(self.buttons)
@@ -214,6 +214,8 @@ class MhEnv:
         episode_reward = 0.
         start_time = None
         obs = None
+
+        self.judge.prepare_evaluation()
         for idx, example in enumerate(self.episode_examples):
             end_time = example["end_time"]
             action = example["action"]

@@ -11,13 +11,18 @@ class ModRewardJudge:
         self.game_log_create_time = 0
         self.last_position = 0
         self.buffer = deque()
+        self.time_and_distances = deque()
         self.is_quest_end = False
+        self.cur_time_and_distance = (0, 0)
 
     def reset_is_quest_end(self):
         self.is_quest_end = False
 
-    def evaluate(self, start_time, end_time):
+    def prepare_evaluation(self):
         self.load_file_to_buffer()
+        self.load_time_and_distances()
+
+    def evaluate(self, start_time, end_time):
         # print(f'start_time {start_time} end_time {end_time}')
         reward = 0
         while self.buffer:
@@ -29,14 +34,46 @@ class ModRewardJudge:
             if log_elapsed_time > start_time:
                 if target == "player":
                     reward -= damage
-                else:
+                elif target == "enemy":
                     reward += damage
             self.buffer.popleft()
 
         # print(f'reward {reward}')
         reward /= 1000.
+
+        distance = self.get_distance(end_time)
+        # print(f'distance {distance}')
+        if distance > 15:
+            reward -= 0.001
+
         reward += common_definitions.STEP_BASE_REWARD
         return reward
+
+    def get_distance(self, action_time):
+        while self.time_and_distances and action_time > self.time_and_distances[0][0]:
+            self.cur_time_and_distance = self.time_and_distances[0]
+            # Pop all items happened before the action time.
+            # In practice, only one pop is enough because the action is much more frequent than the distance logging.
+            self.time_and_distances.popleft()
+
+        if not self.time_and_distances:
+            # The action happened after the last logged distance, just use the last distance.
+            return self.cur_time_and_distance[1]
+
+        # The action time is between the cur and next time.
+        # Calculate the distance between the cur and next distance.
+        cur_time, cur_distance = self.cur_time_and_distance
+        next_time, next_distance = self.time_and_distances[0]
+        distance = cur_distance + (next_distance - cur_distance)*(action_time - cur_time)/(next_time - cur_time)
+
+        return distance
+
+    def load_time_and_distances(self):
+        self.cur_time_and_distance = (0, 0)
+        self.time_and_distances.clear()
+        for log_elapsed_time, category, data in self.buffer:
+            if category == "distance":
+                self.time_and_distances.append((log_elapsed_time, data))
 
     def load_file_to_buffer(self):
         with open(self.game_log_path, "r") as file:
