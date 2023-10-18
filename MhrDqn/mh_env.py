@@ -214,8 +214,8 @@ class MhEnv:
         start_time = None
         obs = None
         episode_info = {
-            "player_taken_damage": 0.,
-            "enemy_taken_damage": 0.,
+            "player_taken_damage": 0,
+            "enemy_taken_damage": 0,
             "avgerage_distance": 0.,
             "episode_len": 0,
             "episode_reward": 0.,

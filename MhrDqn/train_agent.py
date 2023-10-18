@@ -13,6 +13,13 @@ import mh_env
 from torch.utils.tensorboard.writer import SummaryWriter
 
 
+def write_log_file(outdir, t, log_str):
+    timestamp = datetime.datetime.now().strftime("%Y%m%dT%H%M%S.%f")
+    log_path = os.path.join(outdir, 'log.txt')
+    with open(log_path, 'a') as log_file:
+        log_file.write(f"{timestamp} {t} {log_str}\n")
+
+
 def save_agent_replay_buffer(agent, t, outdir, suffix="", logger=None):
     logger = logger or logging.getLogger(__name__)
     filename = os.path.join(outdir, "{}{}.replay.pkl".format(t, suffix))
@@ -25,9 +32,7 @@ def save_agent(agent, t, outdir, logger, suffix=""):
     agent.save(dirname)
     log_str = f"Saved the agent to {dirname}"
     logger.info(log_str)
-    log_path = os.path.join(outdir, 'log.txt')
-    with open(log_path, 'a') as log_file:
-        log_file.write(log_str + '\n')
+    write_log_file(outdir, t, log_str)
 
 
 def log_model_weights(writer, agent, log_step):
@@ -147,7 +152,7 @@ def train_agent(
                 writer.add_scalar('close_distance_count', episode_info["close_distance_count"], log_step)
                 writer.add_scalar('far_distance_count', episode_info["far_distance_count"], log_step)
 
-            episode_idx += 1
+            write_log_file(outdir, t, episode_info)
 
             episode_reward_queue.append(episode_info["episode_reward"])
             if len(episode_reward_queue) == episode_reward_queue_max_len:
@@ -172,6 +177,7 @@ def train_agent(
 
             # Start a new episode
             episode_len = 0
+            episode_idx += 1
     except (Exception, KeyboardInterrupt):
         # Save the current model before being killed
         save_agent(agent, t, outdir, logger, suffix="_except")
