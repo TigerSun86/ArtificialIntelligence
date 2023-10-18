@@ -59,7 +59,6 @@ def train_agent(
 ):
     logger = logger or logging.getLogger(__name__)
 
-    episode_reward = 0
     episode_idx = 0
 
     t = step_offset
@@ -118,13 +117,13 @@ def train_agent(
             if not done:
                 env.pause_game()
 
-            for obs, action, next_obs, reward, done2 in env.get_examples():
+            evaluated_examples, episode_info = env.get_examples()
+            for obs, action, next_obs, reward, done2 in evaluated_examples:
                 agent.remember(obs, action, next_obs, reward, done2)
-                episode_reward += reward
 
             last_time = time.time()
-            log_step = t - episode_len
-            loop_count = episode_len
+            log_step = t - episode_info["episode_len"]
+            loop_count = episode_info["episode_len"]
             for i in range(loop_count):
                 agent.train()
                 log_step += 1
@@ -135,14 +134,17 @@ def train_agent(
             logger.info("training took %f seconds, statistics:%s", time.time()-last_time, stats)
             stats_dict = dict(stats)
             if writer:
-                writer.add_scalar('average_step_reward', episode_reward / episode_len, log_step)
-                writer.add_scalar('episode_reward', episode_reward, log_step)
                 writer.add_scalar('average_q', stats_dict['average_q'], log_step)
                 writer.add_scalar('average_loss', stats_dict['average_loss'], log_step)
-                writer.add_scalar('episode_len', episode_len, log_step)
+                writer.add_scalar('average_step_reward', episode_info["average_step_reward"], log_step)
+                writer.add_scalar('episode_reward', episode_info["episode_reward"], log_step)
+                writer.add_scalar('episode_len', episode_info["episode_len"], log_step)
+                writer.add_scalar('player_taken_damage', episode_info["player_taken_damage"], log_step)
+                writer.add_scalar('enemy_taken_damage', episode_info["enemy_taken_damage"], log_step)
+                writer.add_scalar('avgerage_distance', episode_info["avgerage_distance"], log_step)
             episode_idx += 1
 
-            episode_reward_queue.append(episode_reward)
+            episode_reward_queue.append(episode_info["episode_reward"])
             if len(episode_reward_queue) == episode_reward_queue_max_len:
                 current_model_reward = statistics.median(episode_reward_queue)
                 if best_model_reward < current_model_reward:
@@ -164,10 +166,7 @@ def train_agent(
                 env.start_quest()
 
             # Start a new episode
-            episode_reward = 0
             episode_len = 0
-            if checkpoint_freq and t % checkpoint_freq == 0:
-                save_agent(agent, t, outdir, logger, suffix="_checkpoint")
     except (Exception, KeyboardInterrupt):
         # Save the current model before being killed
         save_agent(agent, t, outdir, logger, suffix="_except")

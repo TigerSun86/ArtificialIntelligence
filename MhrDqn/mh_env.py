@@ -208,12 +208,19 @@ class MhEnv:
         return self.last_obs
 
     def get_examples(self):
-        assert len(self.episode_examples) > 0, "Cannot call env.get_examples() before calling reset()"
+        assert len(self.episode_examples) > 1, "Cannot call env.get_examples() and env.step() before calling reset()"
         last_time = time.time()
         result = []
-        episode_reward = 0.
         start_time = None
         obs = None
+        episode_info = {
+            "player_taken_damage": 0.,
+            "enemy_taken_damage": 0.,
+            "avgerage_distance": 0.,
+            "episode_len": 0,
+            "episode_reward": 0.,
+            "average_step_reward": 0.,
+        }
 
         self.judge.prepare_evaluation()
         for idx, example in enumerate(self.episode_examples):
@@ -224,19 +231,28 @@ class MhEnv:
             # The first example only provides the initial obs.
             if idx > 0:
                 reward, game_info = self.judge.evaluate(start_time, end_time)
-                episode_reward += reward
                 if abs(reward) > abs(common_definitions.STEP_BASE_REWARD) * 1.1:
                     print("Step {}, reward {:.4f}".format(idx, reward))
                 result.append((obs, action, next_obs, reward, done))
+
+                (player_taken_damage, enemy_taken_damage, distance) = game_info
+                episode_info["player_taken_damage"] += player_taken_damage
+                episode_info["enemy_taken_damage"] += enemy_taken_damage
+                episode_info["avgerage_distance"] += distance
+                episode_info["episode_len"] += 1
+                episode_info["episode_reward"] += reward
+
                 if self.is_save_screenshot:
                     self.save_screenshot(idx, obs, action, reward, done, game_info)
 
             start_time = end_time
             obs = next_obs
 
-        print('evaluating reward took {:.3f} seconds, episode_reward {:.3f}, avg_reward {:.3f}'.format(
-            time.time()-last_time, episode_reward, episode_reward / (len(self.episode_examples) - 1)))
-        return result
+        episode_info["average_step_reward"] = episode_info["episode_reward"] / episode_info["episode_len"]
+        episode_info["avgerage_distance"] /= episode_info["episode_len"]
+
+        print('evaluating reward took {:.3f} seconds, info: {}'.format(time.time()-last_time, episode_info))
+        return result, episode_info
 
     def save_screenshot(self, step_idx, obs, action, reward, done, game_info):
         screenshot_outdir = os.path.join(self.outdir, 'quests', str(self.quest_idx), str(self.episode_idx))
