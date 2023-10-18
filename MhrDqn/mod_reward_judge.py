@@ -46,10 +46,11 @@ class ModRewardJudge:
 
         distance = self.get_distance(end_time)
         # print(f'distance {distance}')
-        if distance > 15:
-            reward -= 0.001
+        if distance <= 10:
+            reward += common_definitions.STEP_BASE_REWARD
+        elif distance > 20:
+            reward -= common_definitions.STEP_BASE_REWARD
 
-        reward += common_definitions.STEP_BASE_REWARD
         return reward, (player_taken_damage, enemy_taken_damage, distance)
 
     def get_distance(self, action_time):
