@@ -158,8 +158,9 @@ def train_agent(
             if len(episode_reward_queue) == episode_reward_queue_max_len:
                 current_model_reward = statistics.median(episode_reward_queue)
                 if best_model_reward < current_model_reward:
-                    logger.info(
-                        f"Updating best model because episode reward was increased from {best_model_reward} to {current_model_reward}")
+                    log_str = f"Updating best model because episode reward was increased from {best_model_reward} to {current_model_reward}"
+                    logger.info(log_str)
+                    write_log_file(outdir, t, log_str)
                     best_model_reward = current_model_reward
                     save_agent(agent, t, outdir, logger, suffix="_best")
 
