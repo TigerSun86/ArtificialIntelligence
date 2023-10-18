@@ -162,7 +162,7 @@ def main():
     n_actions = env.get_action_number()
     q_func = atari_cnn.CopyLargeAtariCNN(n_actions, n_input_channels=4)
 
-    opt = torch.optim.Adam(q_func.parameters(), lr=1e-4)
+    opt = torch.optim.Adam(q_func.parameters(), lr=5e-5)
 
     rbuf = replay_buffer.ReplayBuffer(10**6)
 
@@ -183,20 +183,26 @@ def main():
         update_interval=1,
         batch_accumulator="sum",
         phi=phi,
-        epsilon=0.01,
+        epsilon=0.01 if not args.demo else 0,
     )
 
-    train_agent.train_agent_with_evaluation(
-        agent=agent,
-        env=env,
-        steps=args.steps,
-        eval_n_steps=args.eval_n_steps,
-        eval_n_episodes=None,
-        eval_interval=args.eval_interval,
-        outdir=args.outdir,
-        train_max_episode_len=common_definitions.EPISODE_STEP_COUNT,
-        save_best_so_far_agent=True,
-    )
+    if args.load:
+        agent.load(args.load)
+
+    if args.demo:
+        train_agent.demo(agent, env)
+    else:
+        train_agent.train_agent_with_evaluation(
+            agent=agent,
+            env=env,
+            steps=args.steps,
+            eval_n_steps=args.eval_n_steps,
+            eval_n_episodes=None,
+            eval_interval=args.eval_interval,
+            outdir=args.outdir,
+            train_max_episode_len=common_definitions.EPISODE_STEP_COUNT,
+            save_best_so_far_agent=True,
+        )
 
 
 if __name__ == "__main__":

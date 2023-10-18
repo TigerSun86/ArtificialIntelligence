@@ -162,6 +162,39 @@ def train_agent(
     return eval_stats_history
 
 
+def demo(
+    agent: dqn.DQN,
+    env: mh_env.MhEnv,
+):
+    t = 0
+
+    env.reset_debug_ui()
+    env.render()
+
+    env.start_quest(wait_before_start=True)
+    last_time = time.time()
+
+    obs = env.reset()
+
+    while True:
+        action, q_value = agent.act(obs)
+        next_obs, done, time_slept = env.step(action)
+        env.render()
+
+        t += 1
+        obs = next_obs
+
+        print('step {} took {:.3f} s, slept {:.3f} s, q: {:.2E}, a: {} ({})'.format(
+            t, time.time()-last_time, time_slept, q_value, action, env.dqn_action_to_str(action)))
+        last_time = time.time()
+
+        if done:
+            break
+
+    env.release_all_buttons()
+    env.exit_quest()
+
+
 def train_agent_with_evaluation(
     agent,
     env,
