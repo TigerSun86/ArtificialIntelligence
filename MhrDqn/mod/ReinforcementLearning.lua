@@ -172,6 +172,9 @@ end
 
 -- Event callback hook for behaviour updates
 re.on_pre_application_entry("UpdateBehavior", function() -- unnamed/inline function definition
+    if questManager == nil then
+        return
+    end
     -- getting Quest End state
     -- 0: still in quest, 1: ending countdown, 8: ending animation, 16: quest over
     local endFlow = questManager:get_field("_EndFlow")
